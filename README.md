@@ -2,17 +2,17 @@
 
 ## Installation
 
-```shell
+```sh
 $ npm install -S @mozisan/react-form
 ```
 
-```shell
+```sh
 $ yarn add @mozisan/react-form
 ```
 
 ## Basic usage
 
-```typescriptreact
+```tsx
 import {
   boolean,
   number,
