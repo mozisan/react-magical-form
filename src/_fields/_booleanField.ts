@@ -107,12 +107,7 @@ export class BooleanField<
   }
 
   public clear(): void {
-    if (this.element == null) {
-      return;
-    }
-
-    // eslint-disable-next-line functional/immutable-data
-    this.element.checked = false;
+    this.setValue(false);
   }
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, boolean> {

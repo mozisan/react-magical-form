@@ -93,12 +93,7 @@ export class StringField<TRefinement extends Refinement<any, any>>
   }
 
   public clear(): void {
-    if (this.element == null) {
-      return;
-    }
-
-    // eslint-disable-next-line functional/immutable-data
-    this.element.value = '';
+    this.setValue('');
   }
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, string> {
