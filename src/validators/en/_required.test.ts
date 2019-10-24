@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { boolean, number, string } from '../../_fieldFactories';
+import { checkbox, number, text } from '../../_fieldFactories';
 import { useForm } from '../../_useForm';
 import { required } from './_required';
 
@@ -13,11 +13,11 @@ describe('en', () => {
             foo: number({
               validators: [required()],
             }),
-            bar: string({
+            bar: text({
               initial: '',
               validators: [required()],
             }),
-            baz: boolean({
+            baz: checkbox({
               validators: [required()],
             }),
           },

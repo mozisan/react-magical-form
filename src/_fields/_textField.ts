@@ -15,11 +15,12 @@ export type Options<TRefinement extends Refinement<any, any>> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class StringField<TRefinement extends Refinement<any, any>>
+export class TextField<TRefinement extends Refinement<any, any>>
   implements Field<string, InputElements, TRefinement> {
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   private element: InputElements | null = null;
+  private readonly initialValue: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   private value: string;
   private readonly validateValue: Validator<string, TRefinement>;
@@ -31,6 +32,7 @@ export class StringField<TRefinement extends Refinement<any, any>>
     validators = [],
   }: Options<TRefinement>) {
     this.name = name;
+    this.initialValue = initial;
     this.value = initial;
     this.validateValue = composeValidators(validators);
   }
@@ -40,18 +42,20 @@ export class StringField<TRefinement extends Refinement<any, any>>
       return;
     }
 
+    if (this.element != null) {
+      throw new Error(
+        `TextField of \`${this.name}\` cannot be bound to multiple elements.`,
+      );
+    }
+
     if (
       element.name != null &&
       element.name !== '' &&
       element.name !== this.name
     ) {
       throw new Error(
-        `StringField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+        `TextField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
       );
-    }
-
-    if (this.element != null) {
-      this.element.removeEventListener(this.updateEvent, this.handleUpdate);
     }
 
     // eslint-disable-next-line functional/immutable-data
@@ -90,6 +94,10 @@ export class StringField<TRefinement extends Refinement<any, any>>
     }
 
     this.element.focus();
+  }
+
+  public reset(): void {
+    this.setValue(this.initialValue);
   }
 
   public clear(): void {

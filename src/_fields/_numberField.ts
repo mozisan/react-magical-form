@@ -20,6 +20,7 @@ export class NumberField<TRefinement extends Refinement<any, any>>
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   private element: HTMLInputElement | null = null;
+  private readonly initialValue?: number;
   // eslint-disable-next-line functional/prefer-readonly-type
   private value?: number;
   private readonly validator: Validator<number | undefined, TRefinement>;
@@ -27,6 +28,7 @@ export class NumberField<TRefinement extends Refinement<any, any>>
 
   public constructor({ name, initial, validators = [] }: Options<TRefinement>) {
     this.name = name;
+    this.initialValue = initial;
     this.value = initial;
     this.validator = composeValidators(validators);
   }
@@ -34,6 +36,12 @@ export class NumberField<TRefinement extends Refinement<any, any>>
   public bindToElement(element: HTMLInputElement | null): void {
     if (element == null || element === this.element) {
       return;
+    }
+
+    if (this.element != null) {
+      throw new Error(
+        `NumberField of \`${this.name}\` cannot be bound to multiple elements.`,
+      );
     }
 
     if (
@@ -44,10 +52,6 @@ export class NumberField<TRefinement extends Refinement<any, any>>
       throw new Error(
         `NumberField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
       );
-    }
-
-    if (this.element != null) {
-      this.element.removeEventListener(this.updateEvent, this.handleUpdate);
     }
 
     // eslint-disable-next-line functional/immutable-data
@@ -88,6 +92,10 @@ export class NumberField<TRefinement extends Refinement<any, any>>
     }
 
     this.element.focus();
+  }
+
+  public reset(): void {
+    this.setValue(this.initialValue);
   }
 
   public clear(): void {

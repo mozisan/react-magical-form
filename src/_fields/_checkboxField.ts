@@ -16,13 +16,14 @@ export type Options<
   readonly validators?: readonly Validator<boolean, TRefinement>[];
 };
 
-export class BooleanField<
+export class CheckboxField<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
 > implements Field<boolean, HTMLInputElement, TRefinement> {
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   private element: HTMLInputElement | null = null;
+  private readonly initialValue: boolean;
   // eslint-disable-next-line functional/prefer-readonly-type
   private value: boolean;
   private readonly validateValue: Validator<boolean, TRefinement>;
@@ -34,6 +35,7 @@ export class BooleanField<
     validators = [],
   }: Options<TRefinement>) {
     this.name = name;
+    this.initialValue = initial;
     this.value = initial;
     this.validateValue = composeValidators(validators);
   }
@@ -43,14 +45,20 @@ export class BooleanField<
       return;
     }
 
+    if (this.element != null) {
+      throw new Error(
+        `CheckboxField of \`${this.name}\` cannot be bound to multiple elements.`,
+      );
+    }
+
     if (!(element instanceof HTMLInputElement)) {
-      throw new Error('BooleanField can be bound only to HTMLInputElement.');
+      throw new Error('CheckboxField can be bound only to HTMLInputElement.');
     }
 
     const expectedType = 'checkbox';
     if (element.type !== expectedType) {
       throw new Error(
-        `BooleanField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
+        `CheckboxField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
       );
     }
 
@@ -60,12 +68,8 @@ export class BooleanField<
       element.name !== this.name
     ) {
       throw new Error(
-        `BooleanField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+        `CheckboxField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
       );
-    }
-
-    if (this.element != null) {
-      this.element.removeEventListener(this.updateEvent, this.handleUpdate);
     }
 
     // eslint-disable-next-line functional/immutable-data
@@ -104,6 +108,10 @@ export class BooleanField<
     }
 
     this.element.focus();
+  }
+
+  public reset(): void {
+    this.setValue(this.initialValue);
   }
 
   public clear(): void {

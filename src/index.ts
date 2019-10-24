@@ -1,4 +1,4 @@
-export { boolean, number, string } from './_fieldFactories';
+export { checkbox, number, radio, text } from './_fieldFactories';
 export { ValidationError } from './_validator';
 export {
   ValidatorFactoryBuilder,

@@ -3,13 +3,14 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import React, { MutableRefObject, Ref, useEffect, useRef } from 'react';
 
 import {
-  boolean,
+  checkbox,
   max,
   min,
   number,
+  radio,
   range,
   required,
-  string,
+  text,
   useForm,
   ValidationError,
 } from '.';
@@ -32,14 +33,14 @@ describe('useForm()', () => {
 
   describe('field()', () => {
     describe('element bindings', () => {
-      describe('boolean field', () => {
+      describe('checkbox field', () => {
         it('should update value', (done) => {
           const Component: React.FC = () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
               fields: {
-                foo: boolean(),
+                foo: checkbox(),
               },
             });
 
@@ -110,14 +111,69 @@ describe('useForm()', () => {
         });
       });
 
-      describe('string field', () => {
+      describe('radio field', () => {
+        it('should update value', (done) => {
+          const Component: React.FC = () => {
+            const fooOfBarInputRef = useRef<HTMLInputElement>(null);
+            const fooOfBazInputRef = useRef<HTMLInputElement>(null);
+
+            const { field, getValues } = useForm({
+              fields: {
+                foo: radio(),
+              },
+            });
+
+            useEffect(() => {
+              if (
+                fooOfBarInputRef.current == null ||
+                fooOfBazInputRef.current == null
+              ) {
+                throw new Error();
+              }
+
+              expect(getValues().foo).toBe('');
+
+              fooOfBarInputRef.current.click();
+
+              expect(getValues().foo).toBe('bar');
+
+              fooOfBazInputRef.current.click();
+
+              expect(getValues().foo).toBe('baz');
+
+              done();
+            }, [getValues]);
+
+            return (
+              <>
+                <input
+                  ref={combineRefs(field('foo'), fooOfBarInputRef)}
+                  type="radio"
+                  name="foo"
+                  value="bar"
+                />
+                <input
+                  ref={combineRefs(field('foo'), fooOfBazInputRef)}
+                  type="radio"
+                  name="foo"
+                  value="baz"
+                />
+              </>
+            );
+          };
+
+          render(<Component />);
+        });
+      });
+
+      describe('text field', () => {
         it('should update value', (done) => {
           const Component: React.FC = () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
               fields: {
-                foo: string(),
+                foo: text(),
               },
             });
 
@@ -157,9 +213,9 @@ describe('useForm()', () => {
         const { result } = renderHook(() =>
           useForm({
             fields: {
-              foo: boolean(),
+              foo: checkbox(),
               bar: number(),
-              baz: string(),
+              baz: text(),
             },
           }),
         );
@@ -177,9 +233,9 @@ describe('useForm()', () => {
         const { result } = renderHook(() =>
           useForm({
             fields: {
-              foo: boolean({ initial: true }),
+              foo: checkbox({ initial: true }),
               bar: number({ initial: 0 }),
-              baz: string({ initial: 'baz' }),
+              baz: text({ initial: 'baz' }),
             },
           }),
         );
@@ -198,9 +254,9 @@ describe('useForm()', () => {
       const { result } = renderHook(() =>
         useForm({
           fields: {
-            foo: boolean(),
+            foo: checkbox(),
             bar: number({ validators: [range(1, 10)] }),
-            baz: string({ validators: [required()] }),
+            baz: text({ validators: [required()] }),
             foobar: number({
               initial: 1,
               validators: [min(2), max(0)],
@@ -225,7 +281,7 @@ describe('useForm()', () => {
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
           fields: {
-            foo: string(),
+            foo: text(),
           },
         });
 
@@ -253,7 +309,7 @@ describe('useForm()', () => {
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
           fields: {
-            foo: string(),
+            foo: text(),
           },
         });
 
@@ -279,7 +335,7 @@ describe('useForm()', () => {
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
           fields: {
-            foo: string({
+            foo: text({
               validators: [required()],
             }),
           },
@@ -303,8 +359,8 @@ describe('useForm()', () => {
       const Component: React.FC = () => {
         const { field, handleSubmit } = useForm({
           fields: {
-            foo: string(),
-            bar: string({
+            foo: text(),
+            bar: text({
               validators: [required()],
             }),
           },
@@ -333,7 +389,7 @@ describe('useForm()', () => {
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
           fields: {
-            foo: string(),
+            foo: text(),
           },
         });
 
@@ -356,13 +412,13 @@ describe('useForm()', () => {
     });
 
     describe('refinements', () => {
-      describe('boolean', () => {
+      describe('checkbox', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
               fields: {
-                foo: boolean(),
-                bar: boolean({
+                foo: checkbox(),
+                bar: checkbox({
                   validators: [required()],
                 }),
               },

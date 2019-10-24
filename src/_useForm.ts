@@ -85,6 +85,7 @@ type Form<TFields extends Record<string, FieldFactory<any, any, any>>> = {
   readonly setValues: (values: FormValuesOf<TFields>) => void;
   readonly validate: () => FormErrorsOf<TFields>;
   readonly reset: () => void;
+  readonly clear: () => void;
   readonly clearErrors: () => void;
   readonly handleSubmit: (
     handler?: SubmitHandlerCallbackOf<TFields>,
@@ -146,6 +147,10 @@ export const useForm = <
     });
   }, [fields, getValues, rules]);
 
+  const resetValues = useCallback((): void => {
+    mapValues(fields, (field) => field.reset());
+  }, [fields]);
+
   const clearValues = useCallback((): void => {
     mapValues(fields, (field) => field.clear());
   }, [fields]);
@@ -155,6 +160,11 @@ export const useForm = <
   }, [fields]);
 
   const reset = useCallback(() => {
+    resetValues();
+    clearErrors();
+  }, [clearErrors, resetValues]);
+
+  const clear = useCallback(() => {
     clearValues();
     clearErrors();
   }, [clearErrors, clearValues]);
@@ -191,6 +201,7 @@ export const useForm = <
     ),
     validate,
     reset,
+    clear,
     clearErrors,
     handleSubmit: useCallback(
       (handlerCallback?: SubmitHandlerCallbackOf<TFields>) => {

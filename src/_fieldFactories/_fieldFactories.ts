@@ -1,28 +1,40 @@
 import {
-  BooleanField,
-  BooleanFieldOptions,
+  CheckboxField,
+  CheckboxFieldOptions,
   NumberField,
   NumberFieldOptions,
-  StringField,
-  StringFieldOptions,
+  RadioboxField,
+  RadioboxFieldOptions,
+  TextField,
+  TextFieldOptions,
 } from '../_fields';
 import { Refinement } from '../_validator';
 import { FieldFactoryOf } from './_fieldFactory';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const boolean = <TRefinement extends Refinement<any, any> = never>(
-  options: Omit<BooleanFieldOptions<TRefinement>, 'name'> = {},
-): FieldFactoryOf<BooleanField<TRefinement>> => (name: string) =>
-  new BooleanField({ ...options, name });
+export const checkbox = <TRefinement extends Refinement<any, any> = never>(
+  options: Omit<CheckboxFieldOptions<TRefinement>, 'name'> = {},
+): FieldFactoryOf<CheckboxField<TRefinement>> => (name) =>
+  new CheckboxField<TRefinement>({ ...options, name });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const number = <TRefinement extends Refinement<any, any> = never>(
   options: Omit<NumberFieldOptions<TRefinement>, 'name'> = {},
-): FieldFactoryOf<NumberField<TRefinement>> => (name: string) =>
-  new NumberField({ ...options, name });
+): FieldFactoryOf<NumberField<TRefinement>> => (name) =>
+  new NumberField<TRefinement>({ ...options, name });
+
+type A = FieldFactoryOf<RadioboxField<never>>;
+const a: A = (name) => new RadioboxField<never>({ name });
+a;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const string = <TRefinement extends Refinement<any, any> = never>(
-  options: Omit<StringFieldOptions<TRefinement>, 'name'> = {},
-): FieldFactoryOf<StringField<TRefinement>> => (name: string) =>
-  new StringField({ ...options, name });
+export const radio = <TRefinement extends Refinement<any, any> = never>(
+  options: Omit<RadioboxFieldOptions<TRefinement>, 'name'> = {},
+): FieldFactoryOf<RadioboxField<TRefinement>> => (name) =>
+  new RadioboxField<TRefinement>({ ...options, name });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const text = <TRefinement extends Refinement<any, any> = never>(
+  options: Omit<TextFieldOptions<TRefinement>, 'name'> = {},
+): FieldFactoryOf<TextField<TRefinement>> => (name) =>
+  new TextField<TRefinement>({ ...options, name });
