@@ -1,0 +1,36 @@
+version: 2.1
+
+executors:
+  node:
+    working_directory: ~/workspace
+    docker:
+      - image: node:13.0.1-alpine
+
+jobs:
+  build:
+    executor: node
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn build
+
+  lint:
+    executor: node
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn lint
+
+  test:
+    executor: node
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn test
+
+workflows:
+  pull-request:
+    jobs:
+      - build
+      - lint
+      - test
