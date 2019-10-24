@@ -36,7 +36,7 @@ export class StringField<TRefinement extends Refinement<any, any>>
   }
 
   public bindToElement(element: InputElements | null): void {
-    if (element == null) {
+    if (element == null || element === this.element) {
       return;
     }
 

@@ -32,7 +32,7 @@ export class NumberField<TRefinement extends Refinement<any, any>>
   }
 
   public bindToElement(element: HTMLInputElement | null): void {
-    if (element == null) {
+    if (element == null || element === this.element) {
       return;
     }
 

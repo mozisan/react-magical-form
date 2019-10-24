@@ -39,7 +39,7 @@ export class BooleanField<
   }
 
   public bindToElement(element: HTMLInputElement | null): void {
-    if (element == null) {
+    if (element == null || element === this.element) {
       return;
     }
 
