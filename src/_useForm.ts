@@ -78,7 +78,14 @@ type Form<TFields extends Record<string, FieldFactory<any, any, any>>> = {
     name: TName,
   ) => ReturnType<TFields[TName]>['bindToElement'];
   readonly getValues: () => FormValuesOf<TFields>;
+  readonly setValue: <TFieldName extends KeyOf<TFields>>(
+    field: TFieldName,
+    value: FormValuesOf<TFields>[TFieldName],
+  ) => void;
+  readonly setValues: (values: FormValuesOf<TFields>) => void;
   readonly validate: () => FormErrorsOf<TFields>;
+  readonly reset: () => void;
+  readonly clearErrors: () => void;
   readonly handleSubmit: (
     handler?: SubmitHandlerCallbackOf<TFields>,
   ) => (e: React.FormEvent) => void;
@@ -138,6 +145,19 @@ export const useForm = <
     });
   }, [fields, getValues, rules]);
 
+  const clearValues = useCallback((): void => {
+    mapValues(fields, (field) => field.clear());
+  }, [fields]);
+
+  const clearErrors = useCallback((): void => {
+    setErrors(mapValues(fields, () => []));
+  }, [fields]);
+
+  const reset = useCallback(() => {
+    clearValues();
+    clearErrors();
+  }, [clearErrors, clearValues]);
+
   const validate = useCallback(() => {
     const detectedErrors = getErrors();
     setErrors(detectedErrors);
@@ -155,7 +175,22 @@ export const useForm = <
       [fields],
     ),
     getValues,
+    setValue: useCallback(
+      <TFieldName extends KeyOf<TFields>>(
+        field: TFieldName,
+        value: FormValuesOf<TFields>[TFieldName],
+      ): void => fields[field].setValue(value),
+      [fields],
+    ),
+    setValues: useCallback(
+      (newValues: FormValuesOf<TFields>): void => {
+        mapValues(newValues, (value, field) => fields[field].setValue(value));
+      },
+      [fields],
+    ),
     validate,
+    reset,
+    clearErrors,
     handleSubmit: useCallback(
       (handlerCallback?: SubmitHandlerCallbackOf<TFields>) => {
         submitHandlerCallbackRef.current = handlerCallback;

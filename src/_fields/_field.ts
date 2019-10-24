@@ -17,6 +17,7 @@ export type Field<
   readonly setValue: (value: TValue) => void;
   readonly validate: () => ValidationResult<TValue, TRefinement>;
   readonly focus: () => void;
+  readonly clear: () => void;
   readonly dangerouslyGetRefinedValue: () => ApplyRefinement<
     TRefinement,
     TValue

@@ -106,6 +106,15 @@ export class BooleanField<
     this.element.focus();
   }
 
+  public clear(): void {
+    if (this.element == null) {
+      return;
+    }
+
+    // eslint-disable-next-line functional/immutable-data
+    this.element.checked = false;
+  }
+
   public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, boolean> {
     const result = this.validate();
     if (result.type === 'error') {

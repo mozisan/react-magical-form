@@ -90,6 +90,15 @@ export class NumberField<TRefinement extends Refinement<any, any>>
     this.element.focus();
   }
 
+  public clear(): void {
+    if (this.element == null) {
+      return;
+    }
+
+    // eslint-disable-next-line functional/immutable-data
+    this.element.value = '';
+  }
+
   public dangerouslyGetRefinedValue(): ApplyRefinement<
     TRefinement,
     number | undefined
