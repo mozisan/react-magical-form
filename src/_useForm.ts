@@ -117,7 +117,8 @@ export const useForm = <
 
   const fields = useMemo(
     () => mapValues(fieldFactories, (createField, name) => createField(name)),
-    [fieldFactories],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   const getValues = useCallback(
