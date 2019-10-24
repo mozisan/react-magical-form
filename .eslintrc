@@ -1,0 +1,24 @@
+{
+  "extends": ["@mozisan/eslint-config"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["filenames"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true,
+    "node": true
+  },
+  "rules": {
+    "filenames/match-regex": [
+      "error",
+      "^([a-z]+\\.(config|setup)|[A-Z][a-zA-Z0-9]*|index(\\.d)?|_[a-z0-9]([a-zA-Z0-9]*(\\.[a-z0-9])?)*)$",
+      true
+    ],
+    "functional/immutable-data": [
+      "error",
+      { "ignorePattern": ["module.exports", "Ref.current"] }
+    ]
+  }
+}
