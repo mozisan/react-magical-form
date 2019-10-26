@@ -1,6 +1,10 @@
-import { RefObject, useRef } from 'react';
+import { useRef } from 'react';
 
-export const useLatestRef = <T>(value: T): RefObject<T> => {
+export const useLatestRef = <T>(
+  value: T,
+): {
+  readonly current: T;
+} => {
   const latestRef = useRef(value);
   latestRef.current = value;
 
