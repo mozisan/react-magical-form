@@ -15,7 +15,7 @@ export type Refinement<A extends Boxed<any>, B extends Boxed<any>> = {
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Refinement {
-  export type Factory<A, B> = Refinement<Boxed<A>, Boxed<B>>;
+  export type Factory<A, B extends A> = Refinement<Boxed<A>, Boxed<B>>;
 }
 
 export type ApplyRefinement<TRefinement, T> = IsNever<TRefinement> extends true

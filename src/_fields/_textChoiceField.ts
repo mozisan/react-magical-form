@@ -15,7 +15,7 @@ export type Options<
   readonly spec?: Validator<string | undefined, TRefinement>;
 };
 
-export class RadioboxField<
+export class TextChoiceField<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
 > implements Field<string | undefined, TRefinement, HTMLInputElement> {
@@ -47,7 +47,7 @@ export class RadioboxField<
     const expectedType = 'radio';
     if (element.type !== expectedType) {
       throw new Error(
-        `RadioboxField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
+        `TextChoiceField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
       );
     }
 
@@ -57,13 +57,13 @@ export class RadioboxField<
       element.name !== this.name
     ) {
       throw new Error(
-        `RadioboxField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+        `TextChoiceField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
       );
     }
 
     if (this.elements.find(({ value }) => value === element.value) != null) {
       throw new Error(
-        `RadioboxField of \`${this.name}\` can not be bound to element whose value is \`${element.value}\` multiply.`,
+        `TextChoiceField of \`${this.name}\` can not be bound to element whose value is \`${element.value}\` multiply.`,
       );
     }
 

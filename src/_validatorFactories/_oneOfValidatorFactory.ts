@@ -6,12 +6,13 @@ import {
 } from '../_validator';
 
 export const createOneOfValidator = (
-  errorFormatter: (values: readonly string[]) => string,
-) => <T extends string>(
+  errorFormatter: (values: readonly (number | string)[]) => string,
+) => <T extends number | string>(
   ...values: readonly [T, ...readonly T[]]
 ): Validator<
-  string | undefined,
-  Refinement.Factory<string | undefined, T | undefined>
+  number | string | undefined,
+  | Refinement.Factory<number | undefined, Extract<T, number> | undefined>
+  | Refinement.Factory<string | undefined, Extract<T, string> | undefined>
 > => (value) => {
   if (value == null) {
     new ValidationResult.Succeeded();
@@ -19,8 +20,9 @@ export const createOneOfValidator = (
 
   if (values.find((item) => item === value) != null) {
     return new ValidationResult.Succeeded<
-      T,
-      Refinement.Factory<string | undefined, T | undefined>
+      number | string | undefined,
+      | Refinement.Factory<number | undefined, Extract<T, number> | undefined>
+      | Refinement.Factory<string | undefined, Extract<T, string> | undefined>
     >();
   }
 
