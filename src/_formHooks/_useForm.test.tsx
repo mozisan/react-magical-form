@@ -17,6 +17,32 @@ import { useForm } from './_useForm';
 describe('useForm()', () => {
   afterEach(cleanup);
 
+  it('should avoid redundant re-render', () => {
+    const detectReRender = jest.fn();
+
+    const Component: React.FC = () => {
+      const params = useForm({
+        fields: {
+          foo: text(),
+        },
+      });
+
+      useEffect(() => {
+        detectReRender();
+      }, Object.values(params)); // eslint-disable-line react-hooks/exhaustive-deps
+
+      return null;
+    };
+
+    const rendered = render(<Component />);
+
+    expect(detectReRender).toBeCalledTimes(1);
+
+    rendered.rerender(<Component />);
+
+    expect(detectReRender).toBeCalledTimes(1);
+  });
+
   describe('field()', () => {
     describe('element bindings', () => {
       describe('checkbox field', () => {
