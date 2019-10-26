@@ -1,14 +1,14 @@
 {
-  "name": "@mozisan/react-form",
+  "name": "react-magical-form",
   "version": "0.0.3",
   "description": "Form builder for React",
-  "homepage": "https://github.com/mozisan/javascript#readme",
+  "homepage": "https://github.com/mozisan/react-magical-form#readme",
   "bugs": {
-    "url": "https://github.com/mozisan/javascript/issues"
+    "url": "https://github.com/mozisan/react-magical-form/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mozisan/javascript.git"
+    "url": "git+https://github.com/mozisan/react-magical-form.git"
   },
   "license": "MIT",
   "author": "mozisan <cc.sig@icloud.com>",

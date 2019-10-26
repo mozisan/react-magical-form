@@ -1,25 +1,25 @@
-# @mozisan/react-form
+# react-magical-form
 
 ## Installation
 
 ```sh
-$ npm install -S @mozisan/react-form
+$ npm install -S react-magical-form
 ```
 
 ```sh
-$ yarn add @mozisan/react-form
+$ yarn add react-magical-form
 ```
 
 ## Basic usage
 
 ```tsx
+import React from 'react';
 import {
   boolean,
   number,
   string,
   useForm,
-} from '@mozisan/react-form';
-import React from 'react';
+} from 'react-magical-form';
 
 export const RegistrationForm: React.FC = () => {
   const { field, handleSubmit } = useForm({
