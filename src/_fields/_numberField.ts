@@ -106,9 +106,10 @@ export class NumberField<
     TRefinement,
     number | undefined
   > {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of NumberField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, number | undefined>;

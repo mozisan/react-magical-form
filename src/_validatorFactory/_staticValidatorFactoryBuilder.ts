@@ -21,7 +21,5 @@ export const createStaticValidatorFactoryBuilder = <
   formatError: ErrorFormatter<TParams>,
 ) => (...params) => (value) =>
   validate(value, params)
-    ? new ValidationResult.Succeeded<TValue, never>()
-    : new ValidationResult.Failed<TValue, never>(
-        new ValidationError(formatError(...params)),
-      );
+    ? new ValidationResult.Passed()
+    : new ValidationResult.Failed(new ValidationError(formatError(...params)));

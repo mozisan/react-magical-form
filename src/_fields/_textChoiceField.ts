@@ -19,14 +19,14 @@ export class TextChoiceField<
 > implements Field<string | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
   private elements: readonly HTMLInputElement[] = []; // eslint-disable-line functional/prefer-readonly-type
-  private readonly initialValue: string;
+  private readonly initialValue?: string;
   private value?: string; // eslint-disable-line functional/prefer-readonly-type
   private readonly validateValue: Validator<string | undefined, TRefinement>;
   private readonly updateEvent = 'input';
 
   public constructor({
     name,
-    initial: initialValue = '',
+    initial: initialValue,
     spec: validator = Validator.Noop,
   }: Options<TRefinement>) {
     this.name = name;
@@ -110,9 +110,10 @@ export class TextChoiceField<
     TRefinement,
     string | undefined
   > {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of TextChoiceField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, string | undefined>;

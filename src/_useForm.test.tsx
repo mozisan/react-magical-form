@@ -213,7 +213,7 @@ describe('useForm()', () => {
                 throw new Error();
               }
 
-              expect(getValues().foo).toBe('');
+              expect(getValues().foo).toBe(undefined);
 
               fooOfBarInputRef.current.click();
 
@@ -368,7 +368,7 @@ describe('useForm()', () => {
       fireEvent.submit(getByTestId('form'));
 
       expect(onSubmitMock).toBeCalledWith({
-        foo: expect.any(String),
+        foo: '',
       });
     });
 

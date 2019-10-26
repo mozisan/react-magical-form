@@ -5,25 +5,23 @@ import {
   Validator,
 } from '../_validator';
 
-export const createOneOfValidatorBuilder = (
-  errorFormatter: (values: readonly (number | string)[]) => string,
-) => <T extends number | string>(
-  ...values: readonly [T, ...readonly T[]]
-): Validator<
-  number | string | undefined,
+type AcceptableValue = number | string;
+
+type Refinements<T extends AcceptableValue> =
   | Refinement.Factory<number | undefined, Extract<T, number> | undefined>
-  | Refinement.Factory<string | undefined, Extract<T, string> | undefined>
-> => (value) => {
+  | Refinement.Factory<string | undefined, Extract<T, string> | undefined>;
+
+export const createOneOfValidatorBuilder = (
+  errorFormatter: (values: readonly AcceptableValue[]) => string,
+) => <T extends AcceptableValue>(
+  ...values: readonly [T, ...readonly T[]]
+): Validator<AcceptableValue | undefined, Refinements<T>> => (value) => {
   if (value == null) {
-    new ValidationResult.Succeeded();
+    return new ValidationResult.Passed();
   }
 
   if (values.find((item) => item === value) != null) {
-    return new ValidationResult.Succeeded<
-      number | string | undefined,
-      | Refinement.Factory<number | undefined, Extract<T, number> | undefined>
-      | Refinement.Factory<string | undefined, Extract<T, string> | undefined>
-    >();
+    return new ValidationResult.Passed();
   }
 
   return new ValidationResult.Failed(

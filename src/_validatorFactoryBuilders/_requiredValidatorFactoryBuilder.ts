@@ -18,9 +18,8 @@ const isFalse = (value: unknown): boolean =>
 
 export const createRequiredValidatorBuilder = (
   errorFormatter: () => string,
-) => (): Validator<boolean | number | string | undefined, Refinements> => (
-  value,
-) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+) => (): Validator<any, Refinements> => (value) => {
   if (value == null) {
     return new ValidationResult.Failed(new ValidationError(errorFormatter()));
   }
@@ -29,8 +28,5 @@ export const createRequiredValidatorBuilder = (
     return new ValidationResult.Failed(new ValidationError(errorFormatter()));
   }
 
-  return new ValidationResult.Succeeded<
-    boolean | number | string,
-    Refinements
-  >();
+  return new ValidationResult.Passed();
 };

@@ -12,7 +12,7 @@ describe('createMinValidatorFactory()', () => {
 
     const validValues = [0, 1, 10, 100];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });
   });
 });

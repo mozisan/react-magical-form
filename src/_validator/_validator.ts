@@ -12,7 +12,7 @@ export type Validator<
 export namespace Validator {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export const Noop: Validator<any, never> = () =>
-    new ValidationResult.Succeeded();
+    new ValidationResult.Passed();
 }
 
 export type ComposedValueOf<

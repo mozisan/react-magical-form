@@ -12,7 +12,7 @@ describe('createPatternValidatorFactory()', () => {
 
     const validValues = ['-hoge-', 'aaa-hoge-bbb', '-hoge--'];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });
   });
 });

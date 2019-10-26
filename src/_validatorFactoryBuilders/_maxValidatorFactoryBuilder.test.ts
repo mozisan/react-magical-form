@@ -12,7 +12,7 @@ describe('createMaxValidatorFactory()', () => {
 
     const validValues = [-100, -10, -1, 0, 1, 10];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });
   });
 });

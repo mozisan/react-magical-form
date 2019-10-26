@@ -1,6 +1,6 @@
 export { ApplyRefinement, Refinement } from './_refinement';
 export { ValidationError } from './_validationError';
-export { ValidationResult, ValidationResultOf } from './_validationResult';
+export { ValidationResult } from './_validationResult';
 export {
   ComposedValidators,
   Validator,

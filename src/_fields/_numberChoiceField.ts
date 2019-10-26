@@ -112,9 +112,10 @@ export class NumberChoiceField<
     TRefinement,
     number | undefined
   > {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of NumberChoiceField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, number | undefined>;

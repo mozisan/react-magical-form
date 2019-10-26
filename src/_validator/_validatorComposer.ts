@@ -19,5 +19,5 @@ export const compose = <
     >
   >(
     (result, validate) => result.concat(validate(value)),
-    new ValidationResult.Succeeded(),
+    new ValidationResult.Passed(),
   );

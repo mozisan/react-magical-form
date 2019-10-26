@@ -100,9 +100,10 @@ export class TextField<
   }
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, string> {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of TextField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, string>;
