@@ -9,12 +9,12 @@ describe('patternValidatorFactoryBuilder', () => {
 
     const invalidValues = ['', 'hoge', '-hoge', 'hoge-', 'fuga'];
     invalidValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.ErrorDetected);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
     const validValues = ['-hoge-', 'aaa-hoge-bbb', '-hoge--'];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.None);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
     });
   });
 });

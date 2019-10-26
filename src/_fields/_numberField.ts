@@ -113,7 +113,7 @@ export class NumberField<
     number | undefined
   > {
     const result = this.validate();
-    if (result.type === 'error') {
+    if (result.type === 'failed') {
       throw new Error();
     }
 

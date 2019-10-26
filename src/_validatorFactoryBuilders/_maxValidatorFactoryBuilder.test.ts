@@ -9,12 +9,12 @@ describe('maxValidatorFactoryBuilder', () => {
 
     const invalidValues = [11, 100, 1000];
     invalidValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.ErrorDetected);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
     const validValues = [-100, -10, -1, 0, 1, 10];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.None);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
     });
   });
 });

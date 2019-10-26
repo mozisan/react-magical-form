@@ -14,17 +14,17 @@ export const createOneOfValidator = (
   Refinement.Factory<string | undefined, T | undefined>
 > => (value) => {
   if (value == null) {
-    new ValidationResult.None();
+    new ValidationResult.Succeeded();
   }
 
   if (values.find((item) => item === value) != null) {
-    return new ValidationResult.Refined<
+    return new ValidationResult.Succeeded<
       T,
       Refinement.Factory<string | undefined, T | undefined>
     >();
   }
 
-  return new ValidationResult.ErrorDetected(
+  return new ValidationResult.Failed(
     new ValidationError(errorFormatter(values)),
   );
 };

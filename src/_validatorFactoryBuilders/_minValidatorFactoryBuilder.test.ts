@@ -9,12 +9,12 @@ describe('minValidatorFactoryBuilder', () => {
 
     const invalidValues = [-100, -10, -1];
     invalidValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.ErrorDetected);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
     const validValues = [0, 1, 10, 100];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.None);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
     });
   });
 });

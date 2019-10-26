@@ -21,23 +21,14 @@ export const createValidatorFactoryBuilder = <
   TParams extends readonly any[],
   TValue
 >(
-  validate: (
-    value: TValue,
-    params: TParams,
-  ) => boolean | ValidationResult.Refined<TValue, never>,
+  validate: (value: TValue, params: TParams) => boolean,
 ): ValidatorFactoryBuilder<TParams, TValue> => ({
   toValidatorFactory: (formatError: ErrorFormatter<TParams>) => (...params) => (
     value,
-  ) => {
-    const resultOrRefined = validate(value, params);
-    if (resultOrRefined instanceof ValidationResult.Refined) {
-      return resultOrRefined;
-    }
-
-    return resultOrRefined
-      ? new ValidationResult.None<TValue, never>()
-      : new ValidationResult.ErrorDetected<TValue, never>(
+  ) =>
+    validate(value, params)
+      ? new ValidationResult.Succeeded<TValue, never>()
+      : new ValidationResult.Failed<TValue, never>(
           new ValidationError(formatError(...params)),
-        );
-  },
+        ),
 });
