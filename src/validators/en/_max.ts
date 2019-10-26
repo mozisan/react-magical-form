@@ -1,5 +1,5 @@
-import { maxValidatorFactoryBuilder } from '../../_validatorFactoryBuilders';
+import { createMaxValidatorFactory } from '../../_validatorFactoryBuilders';
 
-export const max = maxValidatorFactoryBuilder.toValidatorFactory(
+export const max = createMaxValidatorFactory(
   (limit) => `should be smaller then or equal to ${limit}.`,
 );

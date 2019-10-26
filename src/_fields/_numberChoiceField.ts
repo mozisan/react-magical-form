@@ -15,13 +15,13 @@ export type Options<
   readonly spec?: Validator<number | undefined, TRefinement>;
 };
 
-export class NumberField<
+export class NumberChoiceField<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
 > implements Field<number | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
-  private element: HTMLInputElement | null = null;
+  private elements: readonly HTMLInputElement[] = [];
   private readonly initialValue?: number;
   // eslint-disable-next-line functional/prefer-readonly-type
   private value?: number;
@@ -40,13 +40,14 @@ export class NumberField<
   }
 
   public bindToElement(element: HTMLInputElement | null): void {
-    if (element == null || element === this.element) {
+    if (element == null || this.elements.find((e) => e === element) != null) {
       return;
     }
 
-    if (this.element != null) {
+    const expectedType = 'radio';
+    if (element.type !== expectedType) {
       throw new Error(
-        `NumberField of \`${this.name}\` cannot be bound to multiple elements.`,
+        `NumberChoiceField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
       );
     }
 
@@ -56,37 +57,41 @@ export class NumberField<
       element.name !== this.name
     ) {
       throw new Error(
-        `NumberField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+        `NumberChoiceField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+      );
+    }
+
+    if (this.elements.find(({ value }) => value === element.value) != null) {
+      throw new Error(
+        `NumberChoiceField of \`${this.name}\` can not be bound to element whose value is \`${element.value}\` multiply.`,
       );
     }
 
     // eslint-disable-next-line functional/immutable-data
-    this.element = element;
+    this.elements = [...this.elements, element];
 
     if (this.value != null) {
       this.setValue(this.value);
     }
 
-    this.element.addEventListener(this.updateEvent, this.handleUpdate);
+    element.addEventListener(this.updateEvent, this.handleUpdate);
   }
 
   public getValue(): number | undefined {
     return this.value;
   }
 
-  public setValue(value: number | undefined): void {
+  public setValue(value?: number): void {
     const nanCoercedValue =
       value != null && Number.isNaN(value) ? undefined : value;
 
     // eslint-disable-next-line functional/immutable-data
     this.value = nanCoercedValue;
 
-    if (this.element == null) {
-      return;
-    }
-
-    // eslint-disable-next-line functional/immutable-data
-    this.element.value = nanCoercedValue != null ? `${value}` : '';
+    this.elements.forEach((element) => {
+      // eslint-disable-next-line functional/immutable-data
+      element.checked = element.value === `${nanCoercedValue}`;
+    });
   }
 
   public validate(): ValidationResult<number | undefined, TRefinement> {
@@ -94,11 +99,12 @@ export class NumberField<
   }
 
   public focus(): void {
-    if (this.element == null) {
+    const [element] = this.elements;
+    if (element == null) {
       return;
     }
 
-    this.element.focus();
+    element.focus();
   }
 
   public reset(): void {
@@ -106,7 +112,7 @@ export class NumberField<
   }
 
   public clear(): void {
-    this.setValue(undefined);
+    this.setValue();
   }
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<

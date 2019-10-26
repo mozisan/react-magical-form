@@ -1,5 +1,5 @@
 import { TupleToIntersection, TupleToUnion } from '../_utils';
-import { ApplyRefinement, Refinement } from './_refinement';
+import { Refinement } from './_refinement';
 import { ValidationResult } from './_validationResult';
 
 export type Validator<
@@ -55,18 +55,3 @@ export type ComposedValidators<
   TValidators extends readonly Validator<TValue, any>[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = Validator<TValue, ComposedRefinementOf<TValidators>>;
-
-export type ApplyValidators<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TValidators extends readonly Validator<TValue, any>[],
-  TValue
-> = TupleToIntersection<
-  {
-    [K in keyof TValidators]: TValidators[K] extends Validator<
-      TValue,
-      infer TRefinement
-    >
-      ? ApplyRefinement<TRefinement, TValue>
-      : never;
-  }
->;

@@ -1,10 +1,12 @@
 import {
   CheckboxField,
   CheckboxFieldOptions,
+  NumberChoiceField,
+  NumberChoiceFieldOptions,
   NumberField,
   NumberFieldOptions,
-  RadioboxField,
-  RadioboxFieldOptions,
+  TextChoiceField,
+  TextChoiceFieldOptions,
   TextField,
   TextFieldOptions,
 } from '../_fields';
@@ -27,13 +29,13 @@ export const number = <
 ): FieldFactoryOf<NumberField<TRefinement>> => (name) =>
   new NumberField<TRefinement>({ ...options, name });
 
-export const radio = <
+export const numberChoice = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
 >(
-  options: Omit<RadioboxFieldOptions<TRefinement>, 'name'> = {},
-): FieldFactoryOf<RadioboxField<TRefinement>> => (name) =>
-  new RadioboxField<TRefinement>({ ...options, name });
+  options: Omit<NumberChoiceFieldOptions<TRefinement>, 'name'> = {},
+): FieldFactoryOf<NumberChoiceField<TRefinement>> => (name) =>
+  new NumberChoiceField<TRefinement>({ ...options, name });
 
 export const text = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,3 +44,11 @@ export const text = <
   options: Omit<TextFieldOptions<TRefinement>, 'name'> = {},
 ): FieldFactoryOf<TextField<TRefinement>> => (name) =>
   new TextField<TRefinement>({ ...options, name });
+
+export const textChoice = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+>(
+  options: Omit<TextChoiceFieldOptions<TRefinement>, 'name'> = {},
+): FieldFactoryOf<TextChoiceField<TRefinement>> => (name) =>
+  new TextChoiceField<TRefinement>({ ...options, name });

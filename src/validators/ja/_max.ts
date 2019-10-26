@@ -1,5 +1,5 @@
-import { maxValidatorFactoryBuilder } from '../../_validatorFactoryBuilders';
+import { createMaxValidatorFactory } from '../../_validatorFactoryBuilders';
 
-export const max = maxValidatorFactoryBuilder.toValidatorFactory(
+export const max = createMaxValidatorFactory(
   (limit) => `${limit}以下の値を指定してください。`,
 );

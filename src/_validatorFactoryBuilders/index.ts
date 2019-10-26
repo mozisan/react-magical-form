@@ -1,10 +1,10 @@
-export { maxValidatorFactoryBuilder } from './_maxValidatorFactoryBuilder';
-export { minValidatorFactoryBuilder } from './_minValidatorFactoryBuilder';
+export { createMaxValidatorFactory } from './_maxValidatorFactoryBuilder';
+export { createMinValidatorFactory } from './_minValidatorFactoryBuilder';
+export { createOneOfValidatorBuilder } from './_oneOfValidatorFactoryBuilder';
 export {
-  patternValidatorFactoryBuilder,
+  createPatternValidatorFactory,
 } from './_patternValidatorFactoryBuilder';
-export { rangeValidatorFactoryBuilder } from './_rangeValidatorFactoryBuilder';
+export { createRangeValidatorFactory } from './_rangeValidatorFactoryBuilder';
 export {
-  ValidatorFactoryBuilder,
-  createValidatorFactoryBuilder,
-} from './_validatorFactoryBuilder';
+  createRequiredValidatorBuilder,
+} from './_requiredValidatorFactoryBuilder';

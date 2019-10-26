@@ -1,5 +1,5 @@
-import { patternValidatorFactoryBuilder } from '../../_validatorFactoryBuilders';
+import { createPatternValidatorFactory } from '../../_validatorFactoryBuilders';
 
-export const pattern = patternValidatorFactoryBuilder.toValidatorFactory(
+export const pattern = createPatternValidatorFactory(
   (patternRegExp) => `\`${patternRegExp}\`にマッチしません。`,
 );

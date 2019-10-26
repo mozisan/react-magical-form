@@ -1,5 +1,5 @@
-import { rangeValidatorFactoryBuilder } from '../../_validatorFactoryBuilders';
+import { createRangeValidatorFactory } from '../../_validatorFactoryBuilders';
 
-export const range = rangeValidatorFactoryBuilder.toValidatorFactory(
+export const range = createRangeValidatorFactory(
   (min, max) => `should be between ${min} and ${max}.`,
 );

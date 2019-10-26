@@ -6,7 +6,7 @@ import {
 } from '../_validator';
 
 type Refinements =
-  | Refinement.Factory<boolean, true>
+  | Refinement.Factory<boolean | undefined, true>
   | Refinement.Factory<number | undefined, number>
   | Refinement.Factory<string | undefined, string>;
 
@@ -16,7 +16,7 @@ const isEmptyString = (value: unknown): boolean =>
 const isFalse = (value: unknown): boolean =>
   typeof value === 'boolean' && !value;
 
-export const createRequiredValidator = (
+export const createRequiredValidatorBuilder = (
   errorFormatter: () => string,
 ) => (): Validator<boolean | number | string | undefined, Refinements> => (
   value,

@@ -7,10 +7,11 @@ import {
   max,
   min,
   number,
-  radio,
+  numberChoice,
   range,
   required,
   text,
+  textChoice,
   useForm,
   ValidationError,
 } from '.';
@@ -101,7 +102,7 @@ describe('useForm()', () => {
         });
       });
 
-      describe('radio field', () => {
+      describe('numberChoice field', () => {
         it('should update value', (done) => {
           const Component: React.FC = () => {
             const fooOfBarInputRef = useRef<HTMLInputElement>(null);
@@ -109,7 +110,7 @@ describe('useForm()', () => {
 
             const { field, getValues } = useForm({
               fields: {
-                foo: radio(),
+                foo: numberChoice(),
               },
             });
 
@@ -121,15 +122,15 @@ describe('useForm()', () => {
                 throw new Error();
               }
 
-              expect(getValues().foo).toBe('');
+              expect(getValues().foo).toBe(undefined);
 
               fooOfBarInputRef.current.click();
 
-              expect(getValues().foo).toBe('bar');
+              expect(getValues().foo).toBe(1);
 
               fooOfBazInputRef.current.click();
 
-              expect(getValues().foo).toBe('baz');
+              expect(getValues().foo).toBe(2);
 
               done();
             }, [getValues]);
@@ -140,13 +141,13 @@ describe('useForm()', () => {
                   ref={combineRefs(field('foo'), fooOfBarInputRef)}
                   type="radio"
                   name="foo"
-                  value="bar"
+                  value="1"
                 />
                 <input
                   ref={combineRefs(field('foo'), fooOfBazInputRef)}
                   type="radio"
                   name="foo"
-                  value="baz"
+                  value="2"
                 />
               </>
             );
@@ -188,6 +189,61 @@ describe('useForm()', () => {
                 ref={combineRefs<HTMLInputElement>(field('foo'), fooInputRef)}
                 type="text"
               />
+            );
+          };
+
+          render(<Component />);
+        });
+      });
+
+      describe('textChoice field', () => {
+        it('should update value', (done) => {
+          const Component: React.FC = () => {
+            const fooOfBarInputRef = useRef<HTMLInputElement>(null);
+            const fooOfBazInputRef = useRef<HTMLInputElement>(null);
+
+            const { field, getValues } = useForm({
+              fields: {
+                foo: textChoice(),
+              },
+            });
+
+            useEffect(() => {
+              if (
+                fooOfBarInputRef.current == null ||
+                fooOfBazInputRef.current == null
+              ) {
+                throw new Error();
+              }
+
+              expect(getValues().foo).toBe('');
+
+              fooOfBarInputRef.current.click();
+
+              expect(getValues().foo).toBe('bar');
+
+              fooOfBazInputRef.current.click();
+
+              expect(getValues().foo).toBe('baz');
+
+              done();
+            }, [getValues]);
+
+            return (
+              <>
+                <input
+                  ref={combineRefs(field('foo'), fooOfBarInputRef)}
+                  type="radio"
+                  name="foo"
+                  value="bar"
+                />
+                <input
+                  ref={combineRefs(field('foo'), fooOfBazInputRef)}
+                  type="radio"
+                  name="foo"
+                  value="baz"
+                />
+              </>
             );
           };
 
@@ -469,15 +525,52 @@ describe('useForm()', () => {
         });
       });
 
-      describe('radio', () => {
+      describe('numberChoice', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
               fields: {
-                foo: radio({
+                foo: numberChoice({
                   spec: required(),
                 }),
-                bar: radio({
+                bar: numberChoice({
+                  spec: compose(
+                    required(),
+                    oneOf(1, 2),
+                  ),
+                }),
+              },
+            }),
+          );
+
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
+              readonly foo: number | undefined;
+              readonly bar: number | undefined;
+            }>()
+            .assert();
+
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: number;
+                readonly bar: 1 | 2;
+              }>()
+              .assert();
+          });
+        });
+      });
+
+      describe('textChoice', () => {
+        it('should refinement types correctly', () => {
+          const { result } = renderHook(() =>
+            useForm({
+              fields: {
+                foo: textChoice({
+                  spec: required(),
+                }),
+                bar: textChoice({
                   spec: compose(
                     required(),
                     oneOf('a', 'b'),
