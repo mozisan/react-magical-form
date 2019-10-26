@@ -7,8 +7,7 @@ import {
 import { Field } from './_field';
 
 export type Options<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly name: string;
   readonly initial?: number;
@@ -16,15 +15,12 @@ export type Options<
 };
 
 export class NumberField<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > implements Field<number | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private element: HTMLInputElement | null = null;
+  private element: HTMLInputElement | null = null; // eslint-disable-line functional/prefer-readonly-type
   private readonly initialValue?: number;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private value?: number;
+  private value?: number; // eslint-disable-line functional/prefer-readonly-type
   private readonly validateValue: Validator<number | undefined, TRefinement>;
   private readonly updateEvent = 'input';
 
@@ -60,8 +56,7 @@ export class NumberField<
       );
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.element = element;
+    this.element = element; // eslint-disable-line functional/immutable-data
 
     if (this.value != null) {
       this.setValue(this.value);
@@ -78,15 +73,13 @@ export class NumberField<
     const nanCoercedValue =
       value != null && Number.isNaN(value) ? undefined : value;
 
-    // eslint-disable-next-line functional/immutable-data
-    this.value = nanCoercedValue;
+    this.value = nanCoercedValue; // eslint-disable-line functional/immutable-data
 
     if (this.element == null) {
       return;
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.element.value = nanCoercedValue != null ? `${value}` : '';
+    this.element.value = nanCoercedValue != null ? `${value}` : ''; // eslint-disable-line functional/immutable-data
   }
 
   public validate(): ValidationResult<number | undefined, TRefinement> {

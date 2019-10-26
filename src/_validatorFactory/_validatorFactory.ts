@@ -1,9 +1,7 @@
 import { ComposedValidators, Validator } from '../_validator';
 
 export type ValidatorFactory<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TParams extends readonly any[],
+  TParams extends readonly any[], // eslint-disable-line @typescript-eslint/no-explicit-any
   TValue,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TValidators extends readonly Validator<TValue, any>[]
+  TValidators extends readonly Validator<TValue, any>[] // eslint-disable-line @typescript-eslint/no-explicit-any
 > = (...params: TParams) => ComposedValidators<TValue, TValidators>;

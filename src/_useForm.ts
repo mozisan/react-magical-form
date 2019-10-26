@@ -6,18 +6,15 @@ import { KeyOf, mapValues, useLatestRef, values } from './_utils';
 import { ValidationError } from './_validator';
 
 type FormValuesOf<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly [TKey in KeyOf<TFields>]: ReturnType<
     ReturnType<TFields[TKey]>['getValue']
   >;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RefinedFormValuesOf<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly [TKey in KeyOf<TFields>]: ReturnType<
     ReturnType<TFields[TKey]>['dangerouslyGetRefinedValue']
@@ -25,15 +22,13 @@ type RefinedFormValuesOf<
 };
 
 type FormErrorsOf<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly [TKey in KeyOf<TFields>]: readonly string[];
 };
 
 const getFirstErrorColumn = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 >(
   errors: FormErrorsOf<TFields>,
 ): KeyOf<TFields> | undefined => {
@@ -56,8 +51,7 @@ type FieldRule<TFieldValue, TFormValue> = (
 ) => ValidationError | undefined;
 
 type FormRulesOf<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly [TKey in KeyOf<TFields>]?: FieldRule<
     ReturnType<ReturnType<TFields[TKey]>['getValue']>,
@@ -66,13 +60,11 @@ type FormRulesOf<
 };
 
 type SubmitHandlerCallbackOf<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = (values: RefinedFormValuesOf<TFields>) => void | Promise<void>;
 
 export type Form<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly errors: FormErrorsOf<TFields>;
   readonly isSubmitting: boolean;
@@ -95,16 +87,14 @@ export type Form<
 };
 
 type Options<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly fields: TFields;
   readonly rules?: FormRulesOf<TFields>;
 };
 
 export const useForm = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFields extends Record<string, FieldFactory<any, any, any>>
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 >({
   fields: fieldFactories,
   rules = {},
@@ -120,8 +110,7 @@ export const useForm = <
 
   const fields = useMemo(
     () => mapValues(fieldFactories, (createField, name) => createField(name)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const getValues = useCallback(

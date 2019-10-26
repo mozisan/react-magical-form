@@ -2,21 +2,18 @@ import { ValidationError, ValidationResult } from '../_validator';
 import { ValidatorFactory } from './_validatorFactory';
 
 type ErrorFormatter<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TParams extends readonly any[]
+  TParams extends readonly any[] // eslint-disable-line @typescript-eslint/no-explicit-any
 > = (...params: TParams) => string;
 
 type ValidatorFactoryBuilder<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TParams extends readonly any[],
+  TParams extends readonly any[], // eslint-disable-line @typescript-eslint/no-explicit-any
   TValue
 > = (
   errorFormatter: ErrorFormatter<TParams>,
 ) => ValidatorFactory<TParams, TValue, readonly []>;
 
 export const createStaticValidatorFactoryBuilder = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TParams extends readonly any[],
+  TParams extends readonly any[], // eslint-disable-line @typescript-eslint/no-explicit-any
   TValue
 >(
   validate: (value: TValue, params: TParams) => boolean,

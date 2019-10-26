@@ -7,8 +7,7 @@ import {
 import { Field } from './_field';
 
 export type Options<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly name: string;
   readonly initial?: boolean;
@@ -16,15 +15,12 @@ export type Options<
 };
 
 export class CheckboxField<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > implements Field<boolean, TRefinement, HTMLInputElement> {
   public readonly name: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private element: HTMLInputElement | null = null;
+  private element: HTMLInputElement | null = null; // eslint-disable-line functional/prefer-readonly-type
   private readonly initialValue: boolean;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private value: boolean;
+  private value: boolean; // eslint-disable-line functional/prefer-readonly-type
   private readonly validateValue: Validator<boolean, TRefinement>;
   private readonly updateEvent = 'input';
 
@@ -71,8 +67,7 @@ export class CheckboxField<
       );
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.element = element;
+    this.element = element; // eslint-disable-line functional/immutable-data
 
     if (this.value != null) {
       this.setValue(this.value);
@@ -86,15 +81,13 @@ export class CheckboxField<
   }
 
   public setValue(value: boolean): void {
-    // eslint-disable-next-line functional/immutable-data
-    this.value = value;
+    this.value = value; // eslint-disable-line functional/immutable-data
 
     if (this.element == null) {
       return;
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.element.checked = value;
+    this.element.checked = value; // eslint-disable-line functional/immutable-data
   }
 
   public validate(): ValidationResult<boolean, TRefinement> {

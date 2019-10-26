@@ -8,8 +8,8 @@ type ExactEqual<A, B> = readonly [A] extends readonly [B]
 
 export const expectType = <A>() => ({
   as: <B>(): ExactEqual<A, B> extends true
-    ? { readonly assert: () => void } // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    : never => ({ assert: () => undefined } as any),
+    ? { readonly assert: () => void }
+    : never => ({ assert: () => undefined } as any), // eslint-disable-line @typescript-eslint/no-explicit-any
 });
 
 export const combineRefs = <T>(...refs: readonly Ref<T>[]): Ref<T> => (
@@ -19,8 +19,7 @@ export const combineRefs = <T>(...refs: readonly Ref<T>[]): Ref<T> => (
     if (typeof ref === 'function') {
       ref(target);
     } else {
-      // eslint-disable-next-line functional/immutable-data
-      ((ref as unknown) as MutableRefObject<T | null>).current = target;
+      ((ref as unknown) as MutableRefObject<T | null>).current = target; // eslint-disable-line functional/immutable-data
     }
   });
 };

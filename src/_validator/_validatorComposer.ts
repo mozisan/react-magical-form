@@ -3,10 +3,8 @@ import { ComposedRefinementOf, ComposedValueOf, Validator } from './_validator';
 
 export const compose = <
   TValidators extends readonly [
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Validator<any, any>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...readonly Validator<any, any>[],
+    Validator<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+    ...readonly Validator<any, any>[], // eslint-disable-line @typescript-eslint/no-explicit-any
   ]
 >(
   ...validators: TValidators

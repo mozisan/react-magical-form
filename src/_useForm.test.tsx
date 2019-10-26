@@ -42,7 +42,6 @@ describe('useForm()', () => {
 
               expect(getValues().foo).not.toBe(true);
 
-              // eslint-disable-next-line functional/immutable-data
               fooInputRef.current.checked = true;
               fooInputRef.current.dispatchEvent(new Event('input'));
 
@@ -81,7 +80,6 @@ describe('useForm()', () => {
 
               expect(getValues().foo).not.toBe(1);
 
-              // eslint-disable-next-line functional/immutable-data
               fooInputRef.current.value = '1';
               fooInputRef.current.dispatchEvent(new Event('input'));
 
@@ -175,7 +173,6 @@ describe('useForm()', () => {
 
               expect(getValues().foo).not.toBe('dummy');
 
-              // eslint-disable-next-line functional/immutable-data
               fooInputRef.current.value = 'dummy';
               fooInputRef.current.dispatchEvent(new Event('input'));
 
@@ -338,18 +335,15 @@ describe('useForm()', () => {
       };
 
       const submitEvent = new Event('submit');
-      // eslint-disable-next-line @typescript-eslint/unbound-method, functional/immutable-data
-      submitEvent.preventDefault = jest.fn();
+      submitEvent.preventDefault = jest.fn(); // eslint-disable-line @typescript-eslint/unbound-method, functional/immutable-data
 
       const { getByTestId } = render(<Component />);
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(submitEvent.preventDefault).not.toBeCalled();
+      expect(submitEvent.preventDefault).not.toBeCalled(); // eslint-disable-line @typescript-eslint/unbound-method
 
       getByTestId('form').dispatchEvent(submitEvent);
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(submitEvent.preventDefault).toBeCalled();
+      expect(submitEvent.preventDefault).toBeCalled(); // eslint-disable-line @typescript-eslint/unbound-method
     });
 
     it('should call options.onSubmit() with correct payload', () => {
