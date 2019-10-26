@@ -72,8 +72,8 @@ export namespace ValidationResult {
     public readonly isFailed = true;
     private readonly error: ValidationError;
 
-    public constructor(error: ValidationError) {
-      this.error = error;
+    public constructor(...errorMessages: readonly string[]) {
+      this.error = new ValidationError(...errorMessages);
     }
 
     public concat<
@@ -86,7 +86,7 @@ export namespace ValidationResult {
           return this;
         }
         case 'failed': {
-          return new Failed(this.error.concat(other.error));
+          return new Failed(...this.error.concat(other.error).messages);
         }
       }
     }

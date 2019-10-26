@@ -1,4 +1,4 @@
-import { ValidationError, ValidationResult } from '../_validator';
+import { ValidationResult } from '../_validator';
 import { ValidatorFactory } from './_validatorFactory';
 
 type ErrorFormatter<
@@ -22,4 +22,4 @@ export const createStaticValidatorFactoryBuilder = <
 ) => (...params) => (value) =>
   validate(value, params)
     ? new ValidationResult.Passed()
-    : new ValidationResult.Failed(new ValidationError(formatError(...params)));
+    : new ValidationResult.Failed(formatError(...params));

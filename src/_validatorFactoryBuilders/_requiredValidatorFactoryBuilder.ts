@@ -1,9 +1,4 @@
-import {
-  Refinement,
-  ValidationError,
-  ValidationResult,
-  Validator,
-} from '../_validator';
+import { Refinement, ValidationResult, Validator } from '../_validator';
 
 type Refinements =
   | Refinement.Factory<boolean | undefined, true>
@@ -21,11 +16,11 @@ export const createRequiredValidatorBuilder = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ) => (): Validator<any, Refinements> => (value) => {
   if (value == null) {
-    return new ValidationResult.Failed(new ValidationError(errorFormatter()));
+    return new ValidationResult.Failed(errorFormatter());
   }
 
   if (isEmptyString(value) || isFalse(value)) {
-    return new ValidationResult.Failed(new ValidationError(errorFormatter()));
+    return new ValidationResult.Failed(errorFormatter());
   }
 
   return new ValidationResult.Passed();
