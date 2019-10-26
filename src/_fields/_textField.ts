@@ -108,7 +108,7 @@ export class TextField<
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, string> {
     const result = this.validate();
-    if (result.type === 'error') {
+    if (result.type === 'failed') {
       throw new Error();
     }
 

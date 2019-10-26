@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
-import React, { MutableRefObject, Ref, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import {
   checkbox,
@@ -14,22 +14,9 @@ import {
   useForm,
   ValidationError,
 } from '.';
-import { expectType } from './_utils';
+import { combineRefs, expectType } from './_utils';
 import { compose } from './_validator';
 import { oneOf } from './validators';
-
-const combineRefs = <T,>(...refs: readonly Ref<T>[]): Ref<T> => (
-  target: T | null,
-) => {
-  refs.forEach((ref) => {
-    if (typeof ref === 'function') {
-      ref(target);
-    } else {
-      // eslint-disable-next-line functional/immutable-data
-      ((ref as unknown) as MutableRefObject<T | null>).current = target;
-    }
-  });
-};
 
 describe('useForm()', () => {
   afterEach(cleanup);

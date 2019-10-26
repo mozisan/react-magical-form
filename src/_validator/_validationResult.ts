@@ -7,7 +7,7 @@ type ValidationResultContract<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
 > = {
-  readonly type: string;
+  readonly type: 'succeeded' | 'failed';
   readonly concat: <
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     TAnotherRefinement extends Refinement<any, any>
@@ -22,9 +22,8 @@ export type ValidationResult<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
 > =
-  | ValidationResult.Refined<TValue, TRefinement>
-  | ValidationResult.ErrorDetected<TValue, TRefinement>
-  | ValidationResult.None<TValue, TRefinement>;
+  | ValidationResult.Succeeded<TValue, TRefinement>
+  | ValidationResult.Failed<TValue, TRefinement>;
 
 export type ValidationResultOf<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,12 +35,12 @@ export type ValidationResultOf<
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ValidationResult {
-  export class Refined<
+  export class Succeeded<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any>
+    TRefinement extends Refinement<any, any> = never
   > implements ValidationResultContract<TValue, TRefinement> {
-    public readonly type = 'refined';
+    public readonly type = 'succeeded';
 
     public concat<
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,16 +49,13 @@ export namespace ValidationResult {
       other: ValidationResult<TValue, TAnotherRefinement>,
     ): ValidationResult<TValue, TRefinement | TAnotherRefinement> {
       switch (other.type) {
-        case 'refined': {
+        case 'succeeded': {
           return other as ValidationResult<
             TValue,
             TRefinement | TAnotherRefinement
           >;
         }
-        case 'error': {
-          return other;
-        }
-        case 'none': {
+        case 'failed': {
           return other;
         }
       }
@@ -71,12 +67,12 @@ export namespace ValidationResult {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export class ErrorDetected<
+  export class Failed<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any>
+    TRefinement extends Refinement<any, any> = never
   > implements ValidationResultContract<TValue, TRefinement> {
-    public readonly type = 'error';
+    public readonly type = 'failed';
     private readonly error: ValidationError;
 
     public constructor(error: ValidationError) {
@@ -90,52 +86,17 @@ export namespace ValidationResult {
       other: ValidationResult<TValue, TAnotherRefinement>,
     ): ValidationResult<TValue, TRefinement | TAnotherRefinement> {
       switch (other.type) {
-        case 'refined': {
+        case 'succeeded': {
           return this;
         }
-        case 'error': {
-          return new ErrorDetected(this.error.concat(other.error));
-        }
-        case 'none': {
-          return this;
+        case 'failed': {
+          return new Failed(this.error.concat(other.error));
         }
       }
     }
 
     public getError(): ValidationError | undefined {
       return this.error;
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export class None<
-    TValue,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any>
-  > implements ValidationResultContract<TValue, TRefinement> {
-    public readonly type = 'none';
-
-    public concat<
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      TAnotherRefinement extends Refinement<any, any>
-    >(
-      other: ValidationResult<TValue, TAnotherRefinement>,
-    ): ValidationResult<TValue, TRefinement | TAnotherRefinement> {
-      switch (other.type) {
-        case 'refined': {
-          return other;
-        }
-        case 'error': {
-          return other;
-        }
-        case 'none': {
-          return this;
-        }
-      }
-    }
-
-    public getError(): ValidationError | undefined {
-      return;
     }
   }
 }

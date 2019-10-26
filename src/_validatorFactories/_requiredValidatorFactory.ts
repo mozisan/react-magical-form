@@ -22,16 +22,15 @@ export const createRequiredValidator = (
   value,
 ) => {
   if (value == null) {
-    return new ValidationResult.ErrorDetected(
-      new ValidationError(errorFormatter()),
-    );
+    return new ValidationResult.Failed(new ValidationError(errorFormatter()));
   }
 
   if (isEmptyString(value) || isFalse(value)) {
-    return new ValidationResult.ErrorDetected(
-      new ValidationError(errorFormatter()),
-    );
+    return new ValidationResult.Failed(new ValidationError(errorFormatter()));
   }
 
-  return new ValidationResult.Refined<boolean | number | string, Refinements>();
+  return new ValidationResult.Succeeded<
+    boolean | number | string,
+    Refinements
+  >();
 };
