@@ -11,14 +11,14 @@ describe('ja', () => {
         useForm({
           fields: {
             foo: number({
-              validators: [required()],
+              spec: required(),
             }),
             bar: text({
               initial: '',
-              validators: [required()],
+              spec: required(),
             }),
             baz: checkbox({
-              validators: [required()],
+              spec: required(),
             }),
           },
         }),

@@ -14,6 +14,9 @@ import {
   useForm,
   ValidationError,
 } from '.';
+import { expectType } from './_utils';
+import { compose } from './_validator';
+import { oneOf } from './validators';
 
 const combineRefs = <T,>(...refs: readonly Ref<T>[]): Ref<T> => (
   target: T | null,
@@ -255,11 +258,14 @@ describe('useForm()', () => {
         useForm({
           fields: {
             foo: checkbox(),
-            bar: number({ validators: [range(1, 10)] }),
-            baz: text({ validators: [required()] }),
+            bar: number({ spec: range(1, 10) }),
+            baz: text({ spec: required() }),
             foobar: number({
               initial: 1,
-              validators: [min(2), max(0)],
+              spec: compose(
+                min(2),
+                max(0),
+              ),
             }),
           },
         }),
@@ -336,7 +342,7 @@ describe('useForm()', () => {
         const { handleSubmit } = useForm({
           fields: {
             foo: text({
-              validators: [required()],
+              spec: required(),
             }),
           },
         });
@@ -361,7 +367,7 @@ describe('useForm()', () => {
           fields: {
             foo: text(),
             bar: text({
-              validators: [required()],
+              spec: required(),
             }),
           },
         });
@@ -419,19 +425,27 @@ describe('useForm()', () => {
               fields: {
                 foo: checkbox(),
                 bar: checkbox({
-                  validators: [required()],
+                  spec: required(),
                 }),
               },
             }),
           );
 
-          result.current.handleSubmit((data) => {
-            const expectedData: {
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
               readonly foo: boolean;
-              readonly bar: true;
-            } = data;
+              readonly bar: boolean;
+            }>()
+            .assert();
 
-            expectedData;
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: boolean;
+                readonly bar: true;
+              }>()
+              .assert();
           });
         });
       });
@@ -443,19 +457,64 @@ describe('useForm()', () => {
               fields: {
                 foo: number(),
                 bar: number({
-                  validators: [required()],
+                  spec: required(),
                 }),
               },
             }),
           );
 
-          result.current.handleSubmit((data) => {
-            const expectedData: {
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
               readonly foo: number | undefined;
-              readonly bar: number;
-            } = data;
+              readonly bar: number | undefined;
+            }>()
+            .assert();
 
-            expectedData;
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: number | undefined;
+                readonly bar: number;
+              }>()
+              .assert();
+          });
+        });
+      });
+
+      describe('radio', () => {
+        it('should refinement types correctly', () => {
+          const { result } = renderHook(() =>
+            useForm({
+              fields: {
+                foo: radio({
+                  spec: required(),
+                }),
+                bar: radio({
+                  spec: compose(
+                    required(),
+                    oneOf('a', 'b'),
+                  ),
+                }),
+              },
+            }),
+          );
+
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
+              readonly foo: string | undefined;
+              readonly bar: string | undefined;
+            }>()
+            .assert();
+
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: string;
+                readonly bar: 'a' | 'b';
+              }>()
+              .assert();
           });
         });
       });
@@ -472,7 +531,7 @@ describe('useForm()', () => {
             }),
             bar: number({
               initial: 0,
-              validators: [min(1)],
+              spec: min(1),
             }),
           },
           rules: {

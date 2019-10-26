@@ -1,22 +1,24 @@
 import {
   ApplyRefinement,
-  composeValidators,
   Refinement,
   ValidationResult,
   Validator,
 } from '../_validator';
 import { Field, InputElements } from './_field';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Options<TRefinement extends Refinement<any, any>> = {
+export type Options<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+> = {
   readonly name: string;
   readonly initial?: string;
-  readonly validators?: readonly Validator<string, TRefinement>[];
+  readonly spec?: Validator<string, TRefinement>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class TextField<TRefinement extends Refinement<any, any>>
-  implements Field<string, InputElements, TRefinement> {
+export class TextField<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+> implements Field<string, TRefinement, InputElements> {
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   private element: InputElements | null = null;
@@ -28,13 +30,13 @@ export class TextField<TRefinement extends Refinement<any, any>>
 
   public constructor({
     name,
-    initial = '',
-    validators = [],
+    initial: initialValue = '',
+    spec: validator = Validator.Noop,
   }: Options<TRefinement>) {
     this.name = name;
-    this.initialValue = initial;
-    this.value = initial;
-    this.validateValue = composeValidators(validators);
+    this.initialValue = initialValue;
+    this.value = initialValue;
+    this.validateValue = validator;
   }
 
   public bindToElement(element: InputElements | null): void {

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { FieldFactory } from './_fieldFactories';
 import { InputElements } from './_fields';
-import { KeyOf, mapValues, useLatestRef, values } from './_utilities';
+import { KeyOf, mapValues, useLatestRef, values } from './_utils';
 import { ValidationError } from './_validator';
 
 type FormValuesOf<
@@ -70,8 +70,10 @@ type SubmitHandlerCallbackOf<
   TFields extends Record<string, FieldFactory<any, any, any>>
 > = (values: RefinedFormValuesOf<TFields>) => void | Promise<void>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Form<TFields extends Record<string, FieldFactory<any, any, any>>> = {
+export type Form<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TFields extends Record<string, FieldFactory<any, any, any>>
+> = {
   readonly errors: FormErrorsOf<TFields>;
   readonly isSubmitting: boolean;
   readonly field: <TName extends KeyOf<TFields>>(

@@ -11,30 +11,34 @@ import {
 import { Refinement } from '../_validator';
 import { FieldFactoryOf } from './_fieldFactory';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const checkbox = <TRefinement extends Refinement<any, any> = never>(
+export const checkbox = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+>(
   options: Omit<CheckboxFieldOptions<TRefinement>, 'name'> = {},
 ): FieldFactoryOf<CheckboxField<TRefinement>> => (name) =>
   new CheckboxField<TRefinement>({ ...options, name });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const number = <TRefinement extends Refinement<any, any> = never>(
+export const number = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+>(
   options: Omit<NumberFieldOptions<TRefinement>, 'name'> = {},
 ): FieldFactoryOf<NumberField<TRefinement>> => (name) =>
   new NumberField<TRefinement>({ ...options, name });
 
-type A = FieldFactoryOf<RadioboxField<never>>;
-const a: A = (name) => new RadioboxField<never>({ name });
-a;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const radio = <TRefinement extends Refinement<any, any> = never>(
+export const radio = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+>(
   options: Omit<RadioboxFieldOptions<TRefinement>, 'name'> = {},
 ): FieldFactoryOf<RadioboxField<TRefinement>> => (name) =>
   new RadioboxField<TRefinement>({ ...options, name });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const text = <TRefinement extends Refinement<any, any> = never>(
+export const text = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TRefinement extends Refinement<any, any>
+>(
   options: Omit<TextFieldOptions<TRefinement>, 'name'> = {},
 ): FieldFactoryOf<TextField<TRefinement>> => (name) =>
   new TextField<TRefinement>({ ...options, name });

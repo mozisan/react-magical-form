@@ -26,7 +26,8 @@
     "lint": "eslint --ext .ts,.tsx src",
     "prepare": "run-s build",
     "test": "jest --runInBand",
-    "transpile": "tsc -p tsconfig.build.json"
+    "transpile": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@mozisan/eslint-config": "^1.1.3"

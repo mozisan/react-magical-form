@@ -7,12 +7,12 @@ executors:
       - image: node:13.0.1-alpine
 
 jobs:
-  build:
+  typecheck:
     executor: node
     steps:
       - checkout
       - run: yarn install
-      - run: yarn build
+      - run: yarn typecheck
 
   lint:
     executor: node
@@ -31,6 +31,6 @@ jobs:
 workflows:
   pull-request:
     jobs:
-      - build
+      - typecheck
       - lint
       - test

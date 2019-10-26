@@ -1,6 +1,5 @@
 import {
   ApplyRefinement,
-  composeValidators,
   Refinement,
   ValidationResult,
   Validator,
@@ -13,13 +12,13 @@ export type Options<
 > = {
   readonly name: string;
   readonly initial?: boolean;
-  readonly validators?: readonly Validator<boolean, TRefinement>[];
+  readonly spec?: Validator<boolean, TRefinement>;
 };
 
 export class CheckboxField<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
-> implements Field<boolean, HTMLInputElement, TRefinement> {
+> implements Field<boolean, TRefinement, HTMLInputElement> {
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
   private element: HTMLInputElement | null = null;
@@ -31,13 +30,13 @@ export class CheckboxField<
 
   public constructor({
     name,
-    initial = false,
-    validators = [],
+    initial: initialValue = false,
+    spec: validator = Validator.Noop,
   }: Options<TRefinement>) {
     this.name = name;
-    this.initialValue = initial;
-    this.value = initial;
-    this.validateValue = composeValidators(validators);
+    this.initialValue = initialValue;
+    this.value = initialValue;
+    this.validateValue = validator;
   }
 
   public bindToElement(element: HTMLInputElement | null): void {
@@ -98,7 +97,7 @@ export class CheckboxField<
     this.element.checked = value;
   }
 
-  public validate(): ValidationResult<boolean> {
+  public validate(): ValidationResult<boolean, TRefinement> {
     return this.validateValue(this.getValue());
   }
 

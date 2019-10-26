@@ -1,5 +1,5 @@
 export { checkbox, number, radio, text } from './_fieldFactories';
-export { ValidationError } from './_validator';
+export { ValidationError, compose } from './_validator';
 export {
   ValidatorFactoryBuilder,
   createValidatorFactoryBuilder,

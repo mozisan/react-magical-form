@@ -1,5 +1,3 @@
-import { requiredValidatorFactoryBuilder } from '../../_validatorFactoryBuilders';
+import { createRequiredValidator } from '../../_validatorFactories';
 
-export const required = requiredValidatorFactoryBuilder.toValidatorFactory(
-  () => `値は必須です。`,
-);
+export const required = createRequiredValidator(() => `値は必須です。`);

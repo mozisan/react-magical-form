@@ -12,7 +12,7 @@ describe('en', () => {
           fields: {
             foo: number({
               initial: 0,
-              validators: [range(1, 10)],
+              spec: range(1, 10),
             }),
           },
         }),

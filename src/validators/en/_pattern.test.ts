@@ -11,7 +11,7 @@ describe('en', () => {
         useForm({
           fields: {
             foo: text({
-              validators: [pattern(/^bar$/)],
+              spec: pattern(/^bar$/),
             }),
           },
         }),

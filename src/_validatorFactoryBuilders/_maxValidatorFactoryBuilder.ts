@@ -1,8 +1,8 @@
 import { createValidatorFactoryBuilder } from './_validatorFactoryBuilder';
 
 export const maxValidatorFactoryBuilder = createValidatorFactoryBuilder<
-  number | undefined,
-  readonly [number]
+  readonly [number],
+  number | undefined
 >((value, [max]) => {
   if (value == null) {
     return true;

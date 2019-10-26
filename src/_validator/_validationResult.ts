@@ -1,46 +1,59 @@
 import { Refinement } from './_refinement';
 import { ValidationError } from './_validationError';
+import { ComposedRefinementOf, ComposedValueOf, Validator } from './_validator';
 
 type ValidationResultContract<
   TValue,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any> = never
+  TRefinement extends Refinement<any, any>
 > = {
   readonly type: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly concat: <TAnotherRefinement extends Refinement<any, any>>(
+  readonly concat: <
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    TAnotherRefinement extends Refinement<any, any>
+  >(
     other: ValidationResult<TValue, TAnotherRefinement>,
-  ) => ValidationResult<TValue, TRefinement & TAnotherRefinement>;
+  ) => ValidationResult<TValue, TRefinement | TAnotherRefinement>;
   readonly getError: () => ValidationError | undefined;
 };
 
 export type ValidationResult<
   TValue,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any> = never
+  TRefinement extends Refinement<any, any>
 > =
   | ValidationResult.Refined<TValue, TRefinement>
   | ValidationResult.ErrorDetected<TValue, TRefinement>
   | ValidationResult.None<TValue, TRefinement>;
+
+export type ValidationResultOf<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TValidators extends readonly Validator<any, any>[]
+> = ValidationResult<
+  ComposedValueOf<TValidators>,
+  ComposedRefinementOf<TValidators>
+>;
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ValidationResult {
   export class Refined<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any> = never
+    TRefinement extends Refinement<any, any>
   > implements ValidationResultContract<TValue, TRefinement> {
     public readonly type = 'refined';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public concat<TAnotherRefinement extends Refinement<any, any>>(
+    public concat<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      TAnotherRefinement extends Refinement<any, any>
+    >(
       other: ValidationResult<TValue, TAnotherRefinement>,
-    ): ValidationResult<TValue, TRefinement & TAnotherRefinement> {
+    ): ValidationResult<TValue, TRefinement | TAnotherRefinement> {
       switch (other.type) {
         case 'refined': {
           return other as ValidationResult<
             TValue,
-            TRefinement & TAnotherRefinement
+            TRefinement | TAnotherRefinement
           >;
         }
         case 'error': {
@@ -61,7 +74,7 @@ export namespace ValidationResult {
   export class ErrorDetected<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any> = never
+    TRefinement extends Refinement<any, any>
   > implements ValidationResultContract<TValue, TRefinement> {
     public readonly type = 'error';
     private readonly error: ValidationError;
@@ -70,10 +83,12 @@ export namespace ValidationResult {
       this.error = error;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public concat<TAnotherRefinement extends Refinement<any, any>>(
+    public concat<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      TAnotherRefinement extends Refinement<any, any>
+    >(
       other: ValidationResult<TValue, TAnotherRefinement>,
-    ): ValidationResult<TValue, TRefinement & TAnotherRefinement> {
+    ): ValidationResult<TValue, TRefinement | TAnotherRefinement> {
       switch (other.type) {
         case 'refined': {
           return this;
@@ -96,14 +111,16 @@ export namespace ValidationResult {
   export class None<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any> = never
+    TRefinement extends Refinement<any, any>
   > implements ValidationResultContract<TValue, TRefinement> {
     public readonly type = 'none';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public concat<TAnotherRefinement extends Refinement<any, any>>(
+    public concat<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      TAnotherRefinement extends Refinement<any, any>
+    >(
       other: ValidationResult<TValue, TAnotherRefinement>,
-    ): ValidationResult<TValue, TRefinement & TAnotherRefinement> {
+    ): ValidationResult<TValue, TRefinement | TAnotherRefinement> {
       switch (other.type) {
         case 'refined': {
           return other;

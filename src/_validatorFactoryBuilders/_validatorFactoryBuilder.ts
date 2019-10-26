@@ -1,5 +1,5 @@
-import { Refinement, ValidationError, ValidationResult } from '../_validator';
-import { ValidatorFactory } from '../_validatorFactories';
+import { ValidationError, ValidationResult } from '../_validator';
+import { ValidatorFactory } from '../_validatorFactory';
 
 type ErrorFormatter<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -7,29 +7,25 @@ type ErrorFormatter<
 > = (...params: TParams) => string;
 
 export type ValidatorFactoryBuilder<
-  TValue,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TParams extends readonly any[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any> = never
+  TValue
 > = {
   readonly toValidatorFactory: (
     errorFormatter: ErrorFormatter<TParams>,
-  ) => ValidatorFactory<TValue, TParams, TRefinement>;
+  ) => ValidatorFactory<TParams, TValue, readonly []>;
 };
 
 export const createValidatorFactoryBuilder = <
-  TValue,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TParams extends readonly any[] = readonly [],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any> = never
+  TParams extends readonly any[],
+  TValue
 >(
   validate: (
     value: TValue,
     params: TParams,
-  ) => boolean | ValidationResult.Refined<TValue, TRefinement>,
-): ValidatorFactoryBuilder<TValue, TParams, TRefinement> => ({
+  ) => boolean | ValidationResult.Refined<TValue, never>,
+): ValidatorFactoryBuilder<TParams, TValue> => ({
   toValidatorFactory: (formatError: ErrorFormatter<TParams>) => (...params) => (
     value,
   ) => {
@@ -39,8 +35,8 @@ export const createValidatorFactoryBuilder = <
     }
 
     return resultOrRefined
-      ? new ValidationResult.None<TValue, TRefinement>()
-      : new ValidationResult.ErrorDetected<TValue, TRefinement>(
+      ? new ValidationResult.None<TValue, never>()
+      : new ValidationResult.ErrorDetected<TValue, never>(
           new ValidationError(formatError(...params)),
         );
   },
