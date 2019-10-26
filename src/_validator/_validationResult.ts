@@ -38,7 +38,7 @@ export namespace ValidationResult {
   export class Succeeded<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any> = never
+    TRefinement extends Refinement<any, any>
   > implements ValidationResultContract<TValue, TRefinement> {
     public readonly type = 'succeeded';
 
@@ -70,7 +70,7 @@ export namespace ValidationResult {
   export class Failed<
     TValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TRefinement extends Refinement<any, any> = never
+    TRefinement extends Refinement<any, any>
   > implements ValidationResultContract<TValue, TRefinement> {
     public readonly type = 'failed';
     private readonly error: ValidationError;

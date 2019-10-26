@@ -1,5 +1,5 @@
-import { createOneOfValidator } from '../../_validatorFactories';
+import { createOneOfValidatorBuilder } from '../../_validatorFactoryBuilders';
 
-export const oneOf = createOneOfValidator(
+export const oneOf = createOneOfValidatorBuilder(
   (values) => `should be one of ${values.join(', ')}.`,
 );

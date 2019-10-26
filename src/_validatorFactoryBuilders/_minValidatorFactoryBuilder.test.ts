@@ -1,11 +1,9 @@
 import { ValidationResult } from '../_validator';
-import { minValidatorFactoryBuilder } from './_minValidatorFactoryBuilder';
+import { createMinValidatorFactory } from './_minValidatorFactoryBuilder';
 
-describe('minValidatorFactoryBuilder', () => {
+describe('createMinValidatorFactory()', () => {
   it('should return validator which works correctly', () => {
-    const validate = minValidatorFactoryBuilder.toValidatorFactory(
-      () => 'error',
-    )(0);
+    const validate = createMinValidatorFactory(() => '')(0);
 
     const invalidValues = [-100, -10, -1];
     invalidValues.forEach((value) => {

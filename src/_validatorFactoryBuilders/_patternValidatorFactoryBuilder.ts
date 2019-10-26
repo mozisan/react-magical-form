@@ -1,6 +1,6 @@
-import { createValidatorFactoryBuilder } from './_validatorFactoryBuilder';
+import { createStaticValidatorFactoryBuilder } from '../_validatorFactory';
 
-export const patternValidatorFactoryBuilder = createValidatorFactoryBuilder<
+export const createPatternValidatorFactory = createStaticValidatorFactoryBuilder<
   readonly [RegExp],
   string
 >((value, [pattern]) => pattern.test(value));

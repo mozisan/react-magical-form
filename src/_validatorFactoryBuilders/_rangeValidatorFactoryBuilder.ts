@@ -1,6 +1,6 @@
-import { createValidatorFactoryBuilder } from './_validatorFactoryBuilder';
+import { createStaticValidatorFactoryBuilder } from '../_validatorFactory';
 
-export const rangeValidatorFactoryBuilder = createValidatorFactoryBuilder<
+export const createRangeValidatorFactory = createStaticValidatorFactoryBuilder<
   readonly [number, number],
   number | undefined
 >((value, [min, max]) => {

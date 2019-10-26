@@ -5,7 +5,7 @@ import {
   Validator,
 } from '../_validator';
 
-export const createOneOfValidator = (
+export const createOneOfValidatorBuilder = (
   errorFormatter: (values: readonly (number | string)[]) => string,
 ) => <T extends number | string>(
   ...values: readonly [T, ...readonly T[]]

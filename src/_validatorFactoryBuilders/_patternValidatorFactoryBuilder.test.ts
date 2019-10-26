@@ -1,11 +1,9 @@
 import { ValidationResult } from '../_validator';
-import { patternValidatorFactoryBuilder } from './_patternValidatorFactoryBuilder';
+import { createPatternValidatorFactory } from './_patternValidatorFactoryBuilder';
 
-describe('patternValidatorFactoryBuilder', () => {
+describe('createPatternValidatorFactory()', () => {
   it('should return validator which works correctly', () => {
-    const validate = patternValidatorFactoryBuilder.toValidatorFactory(
-      () => 'error',
-    )(/-hoge-/);
+    const validate = createPatternValidatorFactory(() => '')(/-hoge-/);
 
     const invalidValues = ['', 'hoge', '-hoge', 'hoge-', 'fuga'];
     invalidValues.forEach((value) => {

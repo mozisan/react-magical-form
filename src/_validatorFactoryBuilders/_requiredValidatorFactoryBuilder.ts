@@ -16,7 +16,7 @@ const isEmptyString = (value: unknown): boolean =>
 const isFalse = (value: unknown): boolean =>
   typeof value === 'boolean' && !value;
 
-export const createRequiredValidator = (
+export const createRequiredValidatorBuilder = (
   errorFormatter: () => string,
 ) => (): Validator<boolean | number | string | undefined, Refinements> => (
   value,

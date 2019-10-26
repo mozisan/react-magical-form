@@ -5,10 +5,12 @@ export {
   text,
   textChoice,
 } from './_fieldFactories';
-export { ValidationError, compose } from './_validator';
 export {
-  ValidatorFactoryBuilder,
-  createValidatorFactoryBuilder,
-} from './_validatorFactoryBuilders';
+  compose,
+  ValidationError,
+  ValidationResult,
+  Validator,
+} from './_validator';
+export { createStaticValidatorFactoryBuilder } from './_validatorFactory';
 export * from './validators';
 export { useForm } from './_useForm';
