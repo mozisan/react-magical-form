@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import { checkbox, number, text } from '../../_fieldFactories';
-import { useForm } from '../../_useForm';
+import { useForm } from '../../_formHooks';
 import { required } from './_required';
 
 describe('en', () => {

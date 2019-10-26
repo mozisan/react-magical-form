@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import { text } from '../../_fieldFactories';
-import { useForm } from '../../_useForm';
+import { useForm } from '../../_formHooks';
 import { pattern } from './_pattern';
 
 describe('en', () => {

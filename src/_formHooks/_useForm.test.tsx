@@ -4,20 +4,15 @@ import React, { useEffect, useRef } from 'react';
 
 import {
   checkbox,
-  max,
-  min,
   number,
   numberChoice,
-  range,
-  required,
   text,
   textChoice,
-  useForm,
-  ValidationError,
-} from '.';
-import { combineRefs, expectType } from './_utils';
-import { compose } from './_validator';
-import { oneOf } from './validators';
+} from '../_fieldFactories';
+import { combineRefs, expectType } from '../_utils';
+import { compose, ValidationError } from '../_validator';
+import { max, min, oneOf, range, required } from '../validators';
+import { useForm } from './_useForm';
 
 describe('useForm()', () => {
   afterEach(cleanup);

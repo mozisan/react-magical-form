@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { FieldFactory } from './_fieldFactories';
-import { InputElements } from './_fields';
-import { KeyOf, mapValues, useLatestRef, values } from './_utils';
-import { ValidationError } from './_validator';
+import { FieldFactory } from '../_fieldFactories';
+import { InputElements } from '../_fields';
+import { KeyOf, mapValues, useLatestRef, values } from '../_utils';
+import { ValidationError } from '../_validator';
 
 type FormValuesOf<
   TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any

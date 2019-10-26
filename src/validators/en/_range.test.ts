@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import { number } from '../../_fieldFactories';
-import { useForm } from '../../_useForm';
+import { useForm } from '../../_formHooks';
 import { range } from './_range';
 
 describe('en', () => {
