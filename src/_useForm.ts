@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { FieldFactory } from './_fieldFactories';
 import { InputElements } from './_fields';
-import { KeyOf, mapValues, useLatestRef, values } from './_utilities';
+import { KeyOf, mapValues, useLatestRef, values } from './_utils';
 import { ValidationError } from './_validator';
 
 type FormValuesOf<
@@ -70,8 +70,10 @@ type SubmitHandlerCallbackOf<
   TFields extends Record<string, FieldFactory<any, any, any>>
 > = (values: RefinedFormValuesOf<TFields>) => void | Promise<void>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Form<TFields extends Record<string, FieldFactory<any, any, any>>> = {
+export type Form<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TFields extends Record<string, FieldFactory<any, any, any>>
+> = {
   readonly errors: FormErrorsOf<TFields>;
   readonly isSubmitting: boolean;
   readonly field: <TName extends KeyOf<TFields>>(
@@ -85,6 +87,7 @@ type Form<TFields extends Record<string, FieldFactory<any, any, any>>> = {
   readonly setValues: (values: FormValuesOf<TFields>) => void;
   readonly validate: () => FormErrorsOf<TFields>;
   readonly reset: () => void;
+  readonly clear: () => void;
   readonly clearErrors: () => void;
   readonly handleSubmit: (
     handler?: SubmitHandlerCallbackOf<TFields>,
@@ -146,6 +149,10 @@ export const useForm = <
     });
   }, [fields, getValues, rules]);
 
+  const resetValues = useCallback((): void => {
+    mapValues(fields, (field) => field.reset());
+  }, [fields]);
+
   const clearValues = useCallback((): void => {
     mapValues(fields, (field) => field.clear());
   }, [fields]);
@@ -155,6 +162,11 @@ export const useForm = <
   }, [fields]);
 
   const reset = useCallback(() => {
+    resetValues();
+    clearErrors();
+  }, [clearErrors, resetValues]);
+
+  const clear = useCallback(() => {
     clearValues();
     clearErrors();
   }, [clearErrors, clearValues]);
@@ -191,6 +203,7 @@ export const useForm = <
     ),
     validate,
     reset,
+    clear,
     clearErrors,
     handleSubmit: useCallback(
       (handlerCallback?: SubmitHandlerCallbackOf<TFields>) => {

@@ -12,7 +12,7 @@ describe('ja', () => {
           fields: {
             foo: number({
               initial: 2,
-              validators: [max(1)],
+              spec: max(1),
             }),
           },
         }),

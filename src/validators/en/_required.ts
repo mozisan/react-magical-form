@@ -1,5 +1,3 @@
-import { requiredValidatorFactoryBuilder } from '../../_validatorFactoryBuilders';
+import { createRequiredValidator } from '../../_validatorFactories';
 
-export const required = requiredValidatorFactoryBuilder.toValidatorFactory(
-  () => 'required.',
-);
+export const required = createRequiredValidator(() => 'required.');

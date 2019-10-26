@@ -1,8 +1,8 @@
 import { createValidatorFactoryBuilder } from './_validatorFactoryBuilder';
 
 export const minValidatorFactoryBuilder = createValidatorFactoryBuilder<
-  number | undefined,
-  readonly [number]
+  readonly [number],
+  number | undefined
 >((value, [min]) => {
   if (value == null) {
     return true;

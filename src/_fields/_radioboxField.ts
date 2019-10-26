@@ -11,26 +11,26 @@ export type Options<
   TRefinement extends Refinement<any, any>
 > = {
   readonly name: string;
-  readonly initial?: number;
-  readonly spec?: Validator<number | undefined, TRefinement>;
+  readonly initial?: string;
+  readonly spec?: Validator<string | undefined, TRefinement>;
 };
 
-export class NumberField<
+export class RadioboxField<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TRefinement extends Refinement<any, any>
-> implements Field<number | undefined, TRefinement, HTMLInputElement> {
+> implements Field<string | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
   // eslint-disable-next-line functional/prefer-readonly-type
-  private element: HTMLInputElement | null = null;
-  private readonly initialValue?: number;
+  private elements: readonly HTMLInputElement[] = [];
+  private readonly initialValue: string;
   // eslint-disable-next-line functional/prefer-readonly-type
-  private value?: number;
-  private readonly validateValue: Validator<number | undefined, TRefinement>;
+  private value?: string;
+  private readonly validateValue: Validator<string | undefined, TRefinement>;
   private readonly updateEvent = 'input';
 
   public constructor({
     name,
-    initial: initialValue,
+    initial: initialValue = '',
     spec: validator = Validator.Noop,
   }: Options<TRefinement>) {
     this.name = name;
@@ -40,13 +40,14 @@ export class NumberField<
   }
 
   public bindToElement(element: HTMLInputElement | null): void {
-    if (element == null || element === this.element) {
+    if (element == null || this.elements.find((e) => e === element) != null) {
       return;
     }
 
-    if (this.element != null) {
+    const expectedType = 'radio';
+    if (element.type !== expectedType) {
       throw new Error(
-        `NumberField of \`${this.name}\` cannot be bound to multiple elements.`,
+        `RadioboxField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
       );
     }
 
@@ -56,48 +57,51 @@ export class NumberField<
       element.name !== this.name
     ) {
       throw new Error(
-        `NumberField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+        `RadioboxField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+      );
+    }
+
+    if (this.elements.find(({ value }) => value === element.value) != null) {
+      throw new Error(
+        `RadioboxField of \`${this.name}\` can not be bound to element whose value is \`${element.value}\` multiply.`,
       );
     }
 
     // eslint-disable-next-line functional/immutable-data
-    this.element = element;
+    this.elements = [...this.elements, element];
 
     if (this.value != null) {
       this.setValue(this.value);
     }
 
-    this.element.addEventListener(this.updateEvent, this.handleUpdate);
+    element.addEventListener(this.updateEvent, this.handleUpdate);
   }
 
-  public getValue(): number | undefined {
+  public getValue(): string | undefined {
     return this.value;
   }
 
-  public setValue(value: number | undefined): void {
-    const nanCoercedValue = value != null && isNaN(value) ? undefined : value;
-
+  public setValue(value?: string): void {
     // eslint-disable-next-line functional/immutable-data
-    this.value = nanCoercedValue;
+    this.value = value;
 
-    if (this.element == null) {
-      return;
-    }
-
-    // eslint-disable-next-line functional/immutable-data
-    this.element.value = nanCoercedValue != null ? `${value}` : '';
+    this.elements.forEach((element) => {
+      // eslint-disable-next-line functional/immutable-data
+      element.checked = element.value === value;
+    });
   }
 
-  public validate(): ValidationResult<number | undefined, TRefinement> {
+  public validate(): ValidationResult<string | undefined, TRefinement> {
     return this.validateValue(this.getValue());
   }
 
   public focus(): void {
-    if (this.element == null) {
+    const [element] = this.elements;
+    if (element == null) {
       return;
     }
 
-    this.element.focus();
+    element.focus();
   }
 
   public reset(): void {
@@ -105,24 +109,24 @@ export class NumberField<
   }
 
   public clear(): void {
-    this.setValue(undefined);
+    this.setValue();
   }
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<
     TRefinement,
-    number | undefined
+    string | undefined
   > {
     const result = this.validate();
     if (result.type === 'error') {
       throw new Error();
     }
 
-    return this.getValue() as ApplyRefinement<TRefinement, number | undefined>;
+    return this.getValue() as ApplyRefinement<TRefinement, string | undefined>;
   }
 
   private readonly handleUpdate = (e: Event) => {
     const element = e.target as HTMLInputElement;
 
-    this.setValue(Number(element.value));
+    this.setValue(element.value);
   };
 }

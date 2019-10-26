@@ -1,1 +1,2 @@
-export { ValidatorFactory } from './_validatorFactory';
+export { createOneOfValidator } from './_oneOfValidatorFactory';
+export { createRequiredValidator } from './_requiredValidatorFactory';

@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { string } from '../../_fieldFactories';
+import { text } from '../../_fieldFactories';
 import { useForm } from '../../_useForm';
 import { pattern } from './_pattern';
 
@@ -10,8 +10,8 @@ describe('en', () => {
       const { result } = renderHook(() =>
         useForm({
           fields: {
-            foo: string({
-              validators: [pattern(/^bar$/)],
+            foo: text({
+              spec: pattern(/^bar$/),
             }),
           },
         }),

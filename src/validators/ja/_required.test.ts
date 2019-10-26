@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { boolean, number, string } from '../../_fieldFactories';
+import { checkbox, number, text } from '../../_fieldFactories';
 import { useForm } from '../../_useForm';
 import { required } from './_required';
 
@@ -11,14 +11,14 @@ describe('ja', () => {
         useForm({
           fields: {
             foo: number({
-              validators: [required()],
+              spec: required(),
             }),
-            bar: string({
+            bar: text({
               initial: '',
-              validators: [required()],
+              spec: required(),
             }),
-            baz: boolean({
-              validators: [required()],
+            baz: checkbox({
+              spec: required(),
             }),
           },
         }),

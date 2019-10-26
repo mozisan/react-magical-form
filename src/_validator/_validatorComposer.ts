@@ -1,15 +1,25 @@
-import { Refinement } from './_refinement';
 import { ValidationResult } from './_validationResult';
-import { Validator } from './_validator';
+import { ComposedRefinementOf, ComposedValueOf, Validator } from './_validator';
 
-export const composeValidators = <
-  TValue,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any> = never
+export const compose = <
+  TValidators extends readonly [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Validator<any, any>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...readonly Validator<any, any>[],
+  ]
 >(
-  validators: readonly Validator<TValue, TRefinement>[],
-): Validator<TValue, TRefinement> => (value) =>
-  validators.reduce<ValidationResult<TValue, TRefinement>>(
+  ...validators: TValidators
+): Validator<
+  ComposedValueOf<TValidators>,
+  ComposedRefinementOf<TValidators>
+> => (value) =>
+  validators.reduce<
+    ValidationResult<
+      ComposedValueOf<TValidators>,
+      ComposedRefinementOf<TValidators>
+    >
+  >(
     (result, validate) => result.concat(validate(value)),
     new ValidationResult.None(),
   );

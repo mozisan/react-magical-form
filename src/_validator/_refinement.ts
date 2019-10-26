@@ -1,24 +1,40 @@
-type IsNever<T> = readonly [T] extends readonly [never] ? true : false;
-type NeverToUnknown<T> = IsNever<T> extends true ? unknown : T;
+import {
+  Boxed,
+  BoxedValueOf,
+  CoerceUnknown,
+  IsAny,
+  IsNever,
+  UnionToIntersection,
+} from '../_utils';
 
-export type ApplyRefinement<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement,
-  T
-> = NeverToUnknown<TRefinement> extends Refinement<infer U, infer V>
-  ? T extends U
-    ? V extends T
-      ? any extends V // eslint-disable-line @typescript-eslint/no-explicit-any
-        ? T
-        : V
-      : never
-    : T
-  : T;
-
-declare const A: unique symbol;
-declare const B: unique symbol;
-
-export type Refinement<A, B extends A> = {
-  readonly [A]: A;
-  readonly [B]: B;
+declare const RefinementBrand: unique symbol;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Refinement<A extends Boxed<any>, B extends Boxed<any>> = {
+  readonly [RefinementBrand]: readonly [A, B];
 };
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Refinement {
+  export type Factory<A, B> = Refinement<Boxed<A>, Boxed<B>>;
+}
+
+export type ApplyRefinement<TRefinement, T> = IsNever<TRefinement> extends true
+  ? T
+  : CoerceUnknown<
+      BoxedValueOf<
+        UnionToIntersection<
+          TRefinement extends Refinement<Boxed<infer U>, Boxed<infer V>>
+            ? IsNever<U> extends true
+              ? Boxed<unknown>
+              : IsNever<V> extends true
+              ? Boxed<unknown>
+              : IsAny<V> extends true
+              ? Boxed<unknown>
+              : Boxed<T> extends Boxed<U>
+              ? Boxed<T & V>
+              : Boxed<unknown>
+            : Boxed<unknown>
+        >
+      >,
+      T
+    >;

@@ -13,7 +13,7 @@
   "rules": {
     "filenames/match-regex": [
       "error",
-      "^([a-z]+\\.(config|setup)|[A-Z][a-zA-Z0-9]*|index(\\.d)?|_[a-z0-9]([a-zA-Z0-9]*(\\.[a-z0-9])?)*)$",
+      "^(index(\\.test-d)?|[a-z]+\\.(config|setup)|[A-Z][a-zA-Z0-9]*|_[a-z0-9][a-zA-Z0-9]*(\\.test)?)$",
       true
     ],
     "functional/immutable-data": [
