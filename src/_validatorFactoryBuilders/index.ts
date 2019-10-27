@@ -1,3 +1,4 @@
+export { createExactValidatorBuilder } from './_exactValidatorFactoryBuilder';
 export {
   createIntegerValidatorFactory,
 } from './_integerValidatorFactoryBuilder';
