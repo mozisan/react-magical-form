@@ -12,7 +12,7 @@ export {
 } from './_numberChoiceField';
 export { NumberField, Options as NumberFieldOptions } from './_numberField';
 export {
-  TextChoiceField,
   Options as TextChoiceFieldOptions,
+  TextChoiceField,
 } from './_textChoiceField';
-export { TextField, Options as TextFieldOptions } from './_textField';
+export { Options as TextFieldOptions, TextField } from './_textField';

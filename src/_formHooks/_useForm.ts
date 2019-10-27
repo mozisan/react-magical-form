@@ -84,29 +84,28 @@ export type Form<
   readonly handleSubmit: (
     handler?: SubmitHandlerCallbackOf<TFields>,
   ) => (e: React.FormEvent) => void;
+  readonly useRules: (rules: FormRulesOf<TFields>) => void;
 };
 
 type Options<
   TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly fields: TFields;
-  readonly rules?: FormRulesOf<TFields>;
 };
 
 export const useForm = <
   TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 >({
   fields: fieldFactories,
-  rules = {},
 }: Options<TFields>): Form<TFields> => {
   const memoizedFields = useMemo(
     () => mapValues(fieldFactories, (createField, name) => createField(name)),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
-  const memoizedRules = useMemo(() => rules, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const rulesRef = useRef<FormRulesOf<TFields>>();
 
   const [errors, setErrors] = useState<FormErrorsOf<TFields>>(
-    mapValues(fieldFactories, () => []),
+    mapValues(memoizedFields, () => []),
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -132,14 +131,14 @@ export const useForm = <
     return mapValues(memoizedFields, (field, fieldName) => {
       const specError = field.validate().getError() || ValidationError.empty;
 
-      const rule = memoizedRules[fieldName];
+      const rule = rulesRef.current && rulesRef.current[fieldName];
       const ruleError =
         (rule && rule(formValues[fieldName], formValues)) ||
         ValidationError.empty;
 
       return specError.concat(ruleError).messages;
     });
-  }, [getValues, memoizedFields, memoizedRules]);
+  }, [getValues, memoizedFields]);
 
   const resetValues = useCallback((): void => {
     mapValues(memoizedFields, (field) => field.reset());
@@ -247,5 +246,8 @@ export const useForm = <
       },
       [dangerouslyGetRefinedValues, isSubmittingRef, memoizedFields, validate],
     ),
+    useRules: useCallback((rules: FormRulesOf<TFields>) => {
+      rulesRef.current = rules;
+    }, []),
   };
 };

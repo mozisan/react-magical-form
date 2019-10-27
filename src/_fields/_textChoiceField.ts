@@ -73,6 +73,11 @@ export class TextChoiceField<
   }
 
   public getValue(): string | undefined {
+    const checkedElement = this.elements.find((element) => element.checked);
+    if (checkedElement == null) {
+      return;
+    }
+
     return this.value;
   }
 

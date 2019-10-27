@@ -9,9 +9,11 @@ export {
 } from './_fieldFactories';
 export { useForm } from './_formHooks';
 export {
-  ValidationResult,
-  Validator,
   compose,
   createStaticValidatorFactoryBuilder,
+  Refinement,
+  validationError,
+  ValidationResult,
+  Validator,
 } from './_validator';
 export * from './validators';

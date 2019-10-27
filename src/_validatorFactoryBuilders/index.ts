@@ -9,7 +9,12 @@ export {
   createMinLengthValidatorBuilder,
 } from './_minLengthValidatorFactoryBuilder';
 export { createMinValidatorFactory } from './_minValidatorFactoryBuilder';
-export { createOneOfValidatorBuilder } from './_oneOfValidatorFactoryBuilder';
+export {
+  createOneOfNumbersValidatorBuilder,
+} from './_oneOfNumbersValidatorFactoryBuilder';
+export {
+  createOneOfTextsValidatorBuilder,
+} from './_oneOfTextsValidatorFactoryBuilder';
 export {
   createPatternValidatorFactory,
 } from './_patternValidatorFactoryBuilder';

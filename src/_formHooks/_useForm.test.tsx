@@ -13,7 +13,14 @@ import {
 } from '../_fieldFactories';
 import { combineRefs, expectType } from '../_utils';
 import { compose, validationError } from '../_validator';
-import { max, min, oneOf, range, required } from '../validators';
+import {
+  max,
+  min,
+  oneOfNumbers,
+  oneOfTexts,
+  range,
+  required,
+} from '../validators';
 import { useForm } from './_useForm';
 
 describe('useForm()', () => {
@@ -705,7 +712,7 @@ describe('useForm()', () => {
                 bar: numberChoice({
                   spec: compose(
                     required(),
-                    oneOf(1, 2),
+                    oneOfNumbers(1, 2),
                   ),
                 }),
               },
@@ -742,7 +749,7 @@ describe('useForm()', () => {
                 bar: textChoice({
                   spec: compose(
                     required(),
-                    oneOf('a', 'b'),
+                    oneOfTexts('a', 'b'),
                   ),
                 }),
               },
@@ -783,23 +790,24 @@ describe('useForm()', () => {
               spec: min(1),
             }),
           },
-          rules: {
-            bar: (value, { foo }) => {
-              if (value == null || foo == null) {
-                return;
-              }
-
-              if (value < foo) {
-                return validationError(
-                  'should be smaller than the value of `foo`.',
-                );
-              }
-            },
-          },
         }),
       );
 
       act(() => {
+        result.current.useRules({
+          bar: (value, { foo }) => {
+            if (value == null || foo == null) {
+              return;
+            }
+
+            if (value < foo) {
+              return validationError(
+                'should be smaller than the value of `foo`.',
+              );
+            }
+          },
+        });
+
         expect(result.current.validate()).toEqual({
           foo: [],
           bar: [
