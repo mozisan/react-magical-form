@@ -1,4 +1,9 @@
-import { Refinement, ValidationResult, Validator } from '../_validator';
+import {
+  Refinement,
+  validationError,
+  ValidationResult,
+  Validator,
+} from '../_validator';
 
 type AcceptableValue = number | string;
 
@@ -19,5 +24,5 @@ export const createOneOfValidatorBuilder = (
     return new ValidationResult.Passed();
   }
 
-  return new ValidationResult.Failed(errorFormatter(values));
+  return new ValidationResult.Failed(validationError(errorFormatter(values)));
 };

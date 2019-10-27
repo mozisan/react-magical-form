@@ -1,17 +1,30 @@
-export class ValidationError {
-  public static readonly empty = new ValidationError();
+declare const ValidationErrorContainerBrand: unique symbol;
 
+class ValidationErrorContainer {
+  public static build(message: string): ValidationError {
+    return new ValidationErrorContainer(message);
+  }
+
+  public static readonly empty = new ValidationErrorContainer();
+
+  public readonly [ValidationErrorContainerBrand]: typeof ValidationErrorContainerBrand;
   public readonly messages: readonly string[];
 
-  public constructor(...messages: readonly string[]) {
+  private constructor(...messages: readonly string[]) {
     this.messages = messages;
   }
 
-  public isEmpty(): boolean {
-    return this.messages.length === 0;
-  }
-
-  public concat(other: ValidationError): ValidationError {
-    return new ValidationError(...this.messages, ...other.messages);
+  public concat(other: ValidationErrorContainer): ValidationErrorContainer {
+    return new ValidationErrorContainer(...this.messages, ...other.messages);
   }
 }
+
+export type ValidationError = ValidationErrorContainer;
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ValidationError {
+  export const { empty } = ValidationErrorContainer;
+}
+
+export const validationError = (message: string) =>
+  ValidationErrorContainer.build(message);

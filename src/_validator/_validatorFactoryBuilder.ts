@@ -1,5 +1,6 @@
-import { ValidationResult } from '../_validator';
-import { ValidatorFactory } from './_validatorFactory';
+import { validationError } from './_validationError';
+import { ValidationResult } from './_validationResult';
+import { Validator } from './_validator';
 
 type ErrorFormatter<
   TParams extends readonly any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -10,7 +11,7 @@ type ValidatorFactoryBuilder<
   TValue
 > = (
   errorFormatter: ErrorFormatter<TParams>,
-) => ValidatorFactory<TParams, TValue, readonly []>;
+) => (...params: TParams) => Validator<TValue, never>;
 
 export const createStaticValidatorFactoryBuilder = <
   TParams extends readonly any[], // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -22,4 +23,4 @@ export const createStaticValidatorFactoryBuilder = <
 ) => (...params) => (value) =>
   validate(value, params)
     ? new ValidationResult.Passed()
-    : new ValidationResult.Failed(formatError(...params));
+    : new ValidationResult.Failed(validationError(formatError(...params)));

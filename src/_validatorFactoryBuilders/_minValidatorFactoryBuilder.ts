@@ -1,12 +1,12 @@
-import { createStaticValidatorFactoryBuilder } from '../_validatorFactory';
+import { createStaticValidatorFactoryBuilder } from '../_validator';
 
 export const createMinValidatorFactory = createStaticValidatorFactoryBuilder<
   readonly [number],
   number | undefined
->((value, [min]) => {
+>((value, [limit]) => {
   if (value == null) {
     return true;
   }
 
-  return value >= min;
+  return value >= limit;
 });

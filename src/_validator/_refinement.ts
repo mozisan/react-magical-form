@@ -8,6 +8,7 @@ import {
 } from '../_utils';
 
 declare const RefinementBrand: unique symbol;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Refinement<A extends Boxed<any>, B extends Boxed<any>> = {
   readonly [RefinementBrand]: readonly [A, B];

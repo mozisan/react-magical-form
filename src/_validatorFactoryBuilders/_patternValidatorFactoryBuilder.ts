@@ -1,6 +1,12 @@
-import { createStaticValidatorFactoryBuilder } from '../_validatorFactory';
+import { createStaticValidatorFactoryBuilder } from '../_validator';
 
 export const createPatternValidatorFactory = createStaticValidatorFactoryBuilder<
   readonly [RegExp],
-  string
->((value, [pattern]) => pattern.test(value));
+  string | undefined
+>((value, [pattern]) => {
+  if (value == null) {
+    return true;
+  }
+
+  return pattern.test(value);
+});

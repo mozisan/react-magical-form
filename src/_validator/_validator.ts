@@ -15,7 +15,7 @@ export namespace Validator {
     new ValidationResult.Passed();
 }
 
-export type ComposedValueOf<
+export type ValueIntersectionOf<
   TValidators extends readonly Validator<any, any>[] // eslint-disable-line @typescript-eslint/no-explicit-any
 > = TupleToIntersection<
   {
@@ -28,7 +28,7 @@ export type ComposedValueOf<
   }
 >;
 
-export type ComposedRefinementOf<
+export type RefinementUnionOf<
   TValidators extends readonly Validator<any, any>[] // eslint-disable-line @typescript-eslint/no-explicit-any
 > = Extract<
   TupleToUnion<
@@ -43,8 +43,3 @@ export type ComposedRefinementOf<
   >,
   Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 >;
-
-export type ComposedValidators<
-  TValue,
-  TValidators extends readonly Validator<TValue, any>[] // eslint-disable-line @typescript-eslint/no-explicit-any
-> = Validator<TValue, ComposedRefinementOf<TValidators>>;

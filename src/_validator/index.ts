@@ -1,10 +1,12 @@
 export { ApplyRefinement, Refinement } from './_refinement';
-export { ValidationError } from './_validationError';
+export { ValidationError, validationError } from './_validationError';
 export { ValidationResult } from './_validationResult';
 export {
-  ComposedValidators,
   Validator,
-  ComposedRefinementOf,
-  ComposedValueOf,
+  RefinementUnionOf,
+  ValueIntersectionOf,
 } from './_validator';
 export { compose } from './_validatorComposer';
+export {
+  createStaticValidatorFactoryBuilder,
+} from './_validatorFactoryBuilder';

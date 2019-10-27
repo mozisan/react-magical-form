@@ -43,7 +43,7 @@ export class NumberChoiceField<
     const expectedType = 'radio';
     if (element.type !== expectedType) {
       throw new Error(
-        `NumberChoiceField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
+        `NumberChoiceField can be bound only to HTMLInputElement whose type is \`${expectedType}\`.`,
       );
     }
 

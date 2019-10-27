@@ -4,6 +4,8 @@ export {
   CheckboxField,
   Options as CheckboxFieldOptions,
 } from './_checkboxField';
+export { FileField, Options as FileFieldOptions } from './_fileField';
+export { FilesField, Options as FilesFieldOptions } from './_filesField';
 export {
   NumberChoiceField,
   Options as NumberChoiceFieldOptions,

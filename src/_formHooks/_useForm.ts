@@ -130,13 +130,14 @@ export const useForm = <
     const formValues = getValues();
 
     return mapValues(memoizedFields, (field, fieldName) => {
-      const rule = memoizedRules[fieldName];
+      const specError = field.validate().getError() || ValidationError.empty;
 
-      return [
-        field.validate().getError() || ValidationError.empty,
+      const rule = memoizedRules[fieldName];
+      const ruleError =
         (rule && rule(formValues[fieldName], formValues)) ||
-          ValidationError.empty,
-      ].reduce((a, b) => a.concat(b)).messages;
+        ValidationError.empty;
+
+      return specError.concat(ruleError).messages;
     });
   }, [getValues, memoizedFields, memoizedRules]);
 

@@ -4,13 +4,15 @@ import React, { useEffect, useRef } from 'react';
 
 import {
   checkbox,
+  file,
+  files,
   number,
   numberChoice,
   text,
   textChoice,
 } from '../_fieldFactories';
 import { combineRefs, expectType } from '../_utils';
-import { compose, ValidationError } from '../_validator';
+import { compose, validationError } from '../_validator';
 import { max, min, oneOf, range, required } from '../validators';
 import { useForm } from './_useForm';
 
@@ -75,6 +77,94 @@ describe('useForm()', () => {
               <input
                 ref={combineRefs(field('foo'), fooInputRef)}
                 type="checkbox"
+              />
+            );
+          };
+
+          render(<Component />);
+        });
+      });
+
+      describe('file field', () => {
+        it('should update value', (done) => {
+          const dummyFile = new File(['(⌐□_□)'], 'chucknorris.png', {
+            type: 'image/png',
+          });
+
+          const Component: React.FC = () => {
+            const fooInputRef = useRef<HTMLInputElement>(null);
+
+            const { field, getValues } = useForm({
+              fields: {
+                foo: file(),
+              },
+            });
+
+            useEffect(() => {
+              if (fooInputRef.current == null) {
+                throw new Error();
+              }
+
+              expect(getValues().foo).toBe(undefined);
+
+              fireEvent.change(fooInputRef.current, {
+                target: {
+                  files: [dummyFile],
+                },
+              });
+
+              expect(getValues().foo).toBe(dummyFile);
+
+              done();
+            }, [getValues]);
+
+            return (
+              <input ref={combineRefs(field('foo'), fooInputRef)} type="file" />
+            );
+          };
+
+          render(<Component />);
+        });
+      });
+
+      describe('files field', () => {
+        it('should update value', (done) => {
+          const dummyFile = new File(['(⌐□_□)'], 'chucknorris.png', {
+            type: 'image/png',
+          });
+
+          const Component: React.FC = () => {
+            const fooInputRef = useRef<HTMLInputElement>(null);
+
+            const { field, getValues } = useForm({
+              fields: {
+                foo: files(),
+              },
+            });
+
+            useEffect(() => {
+              if (fooInputRef.current == null) {
+                throw new Error();
+              }
+
+              expect(getValues().foo).toEqual([]);
+
+              fireEvent.change(fooInputRef.current, {
+                target: {
+                  files: [dummyFile],
+                },
+              });
+
+              expect(getValues().foo).toEqual([dummyFile]);
+
+              done();
+            }, [getValues]);
+
+            return (
+              <input
+                ref={combineRefs(field('foo'), fooInputRef)}
+                type="file"
+                multiple
               />
             );
           };
@@ -508,6 +598,70 @@ describe('useForm()', () => {
         });
       });
 
+      describe('file', () => {
+        it('should refinement types correctly', () => {
+          const { result } = renderHook(() =>
+            useForm({
+              fields: {
+                foo: file(),
+                bar: file({
+                  spec: required(),
+                }),
+              },
+            }),
+          );
+
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
+              readonly foo: File | undefined;
+              readonly bar: File | undefined;
+            }>()
+            .assert();
+
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: File | undefined;
+                readonly bar: File;
+              }>()
+              .assert();
+          });
+        });
+      });
+
+      describe('files', () => {
+        it('should refinement types correctly', () => {
+          const { result } = renderHook(() =>
+            useForm({
+              fields: {
+                foo: files(),
+                bar: files({
+                  spec: required(),
+                }),
+              },
+            }),
+          );
+
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
+              readonly foo: readonly File[];
+              readonly bar: readonly File[];
+            }>()
+            .assert();
+
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: readonly File[];
+                readonly bar: readonly [File, ...readonly File[]];
+              }>()
+              .assert();
+          });
+        });
+      });
+
       describe('number', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
@@ -636,7 +790,7 @@ describe('useForm()', () => {
               }
 
               if (value < foo) {
-                return new ValidationError(
+                return validationError(
                   'should be smaller than the value of `foo`.',
                 );
               }

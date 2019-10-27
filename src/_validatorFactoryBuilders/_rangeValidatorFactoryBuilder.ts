@@ -1,4 +1,4 @@
-import { createStaticValidatorFactoryBuilder } from '../_validatorFactory';
+import { createStaticValidatorFactoryBuilder } from '../_validator';
 
 export const createRangeValidatorFactory = createStaticValidatorFactoryBuilder<
   readonly [number, number],

@@ -1,5 +1,9 @@
 import { ValidationResult } from './_validationResult';
-import { ComposedRefinementOf, ComposedValueOf, Validator } from './_validator';
+import {
+  RefinementUnionOf,
+  Validator,
+  ValueIntersectionOf,
+} from './_validator';
 
 export const compose = <
   TValidators extends readonly [
@@ -9,13 +13,13 @@ export const compose = <
 >(
   ...validators: TValidators
 ): Validator<
-  ComposedValueOf<TValidators>,
-  ComposedRefinementOf<TValidators>
+  ValueIntersectionOf<TValidators>,
+  RefinementUnionOf<TValidators>
 > => (value) =>
   validators.reduce<
     ValidationResult<
-      ComposedValueOf<TValidators>,
-      ComposedRefinementOf<TValidators>
+      ValueIntersectionOf<TValidators>,
+      RefinementUnionOf<TValidators>
     >
   >(
     (result, validate) => result.concat(validate(value)),

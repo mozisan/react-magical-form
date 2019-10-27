@@ -43,7 +43,7 @@ export class TextChoiceField<
     const expectedType = 'radio';
     if (element.type !== expectedType) {
       throw new Error(
-        `TextChoiceField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
+        `TextChoiceField can be bound only to HTMLInputElement whose type is \`${expectedType}\`.`,
       );
     }
 

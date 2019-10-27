@@ -10,28 +10,23 @@ export type Options<
   TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly name: string;
-  readonly initial?: boolean;
-  readonly spec?: Validator<boolean, TRefinement>;
+  readonly spec?: Validator<File | undefined, TRefinement>;
 };
 
-export class CheckboxField<
+export class FileField<
   TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
-> implements Field<boolean, TRefinement, HTMLInputElement> {
+> implements Field<File | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
   private element: HTMLInputElement | null = null; // eslint-disable-line functional/prefer-readonly-type
-  private readonly initialValue: boolean;
-  private value: boolean; // eslint-disable-line functional/prefer-readonly-type
-  private readonly validateValue: Validator<boolean, TRefinement>;
-  private readonly updateEvent = 'input';
+  private value?: File; // eslint-disable-line functional/prefer-readonly-type
+  private readonly validateValue: Validator<File | undefined, TRefinement>;
+  private readonly updateEvent = 'change';
 
   public constructor({
     name,
-    initial: initialValue = false,
     spec: validator = Validator.Noop,
   }: Options<TRefinement>) {
     this.name = name;
-    this.initialValue = initialValue;
-    this.value = initialValue;
     this.validateValue = validator;
   }
 
@@ -42,18 +37,24 @@ export class CheckboxField<
 
     if (this.element != null) {
       throw new Error(
-        `CheckboxField of \`${this.name}\` cannot be bound to multiple elements.`,
+        `FileField of \`${this.name}\` cannot be bound to multiple elements.`,
       );
     }
 
     if (!(element instanceof HTMLInputElement)) {
-      throw new Error('CheckboxField can be bound only to HTMLInputElement.');
+      throw new Error('FileField can be bound only to HTMLInputElement.');
     }
 
-    const expectedType = 'checkbox';
+    const expectedType = 'file';
     if (element.type !== expectedType) {
       throw new Error(
-        `CheckboxField can be bound only to HTMLInputElement whose type is \`${expectedType}\`.`,
+        `FileField can be bound only to HTMLInputElement whose type is \`${expectedType}\`.`,
+      );
+    }
+
+    if (element.multiple) {
+      throw new Error(
+        `FileField cannot be bound to HTMLInputElement whose multiple is true.`,
       );
     }
 
@@ -63,34 +64,24 @@ export class CheckboxField<
       element.name !== this.name
     ) {
       throw new Error(
-        `CheckboxField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
+        `FileField of \`${this.name}\` can not be bound to element whose name is \`${element.name}\``,
       );
     }
 
     this.element = element; // eslint-disable-line functional/immutable-data
 
-    if (this.value != null) {
-      this.setValue(this.value);
-    }
-
     this.element.addEventListener(this.updateEvent, this.handleUpdate);
   }
 
-  public getValue(): boolean {
+  public getValue(): File | undefined {
     return this.value;
   }
 
-  public setValue(value: boolean): void {
-    this.value = value; // eslint-disable-line functional/immutable-data
-
-    if (this.element == null) {
-      return;
-    }
-
-    this.element.checked = value; // eslint-disable-line functional/immutable-data
+  public setValue(file?: File): void {
+    this.value = file; // eslint-disable-line functional/immutable-data
   }
 
-  public validate(): ValidationResult<boolean, TRefinement> {
+  public validate(): ValidationResult<File | undefined, TRefinement> {
     return this.validateValue(this.getValue());
   }
 
@@ -103,26 +94,32 @@ export class CheckboxField<
   }
 
   public reset(): void {
-    this.setValue(this.initialValue);
+    this.setValue();
   }
 
   public clear(): void {
-    this.setValue(false);
+    this.setValue();
   }
 
-  public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, boolean> {
+  public dangerouslyGetRefinedValue(): ApplyRefinement<
+    TRefinement,
+    File | undefined
+  > {
     if (this.validate().isFailed) {
       throw new Error(
-        `dangerouslyGetRefinedValue() of CheckboxField for \`${this.name}\` is called, but validation failed.`,
+        `dangerouslyGetRefinedValue() of FileField for \`${this.name}\` is called, but validation failed.`,
       );
     }
 
-    return this.getValue() as ApplyRefinement<TRefinement, boolean>;
+    return this.getValue() as ApplyRefinement<TRefinement, File | undefined>;
   }
 
   private readonly handleUpdate = (e: Event) => {
     const element = e.target as HTMLInputElement;
+    if (element.files == null) {
+      return;
+    }
 
-    this.setValue(element.checked);
+    this.setValue(element.files[0]);
   };
 }

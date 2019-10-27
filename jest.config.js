@@ -4,7 +4,7 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['<rootDir>/src/**/*.ts', '<rootDir>/src/**/*.tsx'],
   coverageDirectory: '<rootDir>/coverage/',
-  coveragePathIgnorePatterns: ['/index\\.ts$'],
+  coveragePathIgnorePatterns: ['/index\\.ts$', '/validators/'],
   coverageReporters: ['lcov', 'text-summary', 'cobertura'],
   moduleDirectories: [
     '<rootDir>/node_modules/',

@@ -1,5 +1,8 @@
+export { integer } from './_integer';
 export { max } from './_max';
+export { maxLength } from './_maxLength';
 export { min } from './_min';
+export { minLength } from './_minLength';
 export { oneOf } from './_oneOf';
 export { pattern } from './_pattern';
 export { range } from './_range';
