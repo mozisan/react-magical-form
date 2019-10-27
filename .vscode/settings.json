@@ -5,6 +5,10 @@
   "[javascriptreact]": {
     "editor.formatOnSave": false
   },
+  "[markdown]": {
+    "editor.tabSize": 4,
+    "files.trimTrailingWhitespace": false
+  },
   "[typescript]": {
     "editor.formatOnSave": false
   },
@@ -27,6 +31,10 @@
       "language": "typescriptreact"
     }
   ],
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "prettier.disableLanguages": ["markdown"],
   "javascript.format.enable": false,
   "typescript.format.enable": false,
   "typescript.tsdk": "./node_modules/typescript/lib"
