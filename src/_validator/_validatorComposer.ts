@@ -1,25 +1,27 @@
 import { ValidationResult } from './_validationResult';
-import { ComposedRefinementOf, ComposedValueOf, Validator } from './_validator';
+import {
+  RefinementUnionOf,
+  Validator,
+  ValueIntersectionOf,
+} from './_validator';
 
 export const compose = <
   TValidators extends readonly [
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Validator<any, any>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...readonly Validator<any, any>[],
+    Validator<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+    ...readonly Validator<any, any>[], // eslint-disable-line @typescript-eslint/no-explicit-any
   ]
 >(
   ...validators: TValidators
 ): Validator<
-  ComposedValueOf<TValidators>,
-  ComposedRefinementOf<TValidators>
+  ValueIntersectionOf<TValidators>,
+  RefinementUnionOf<TValidators>
 > => (value) =>
   validators.reduce<
     ValidationResult<
-      ComposedValueOf<TValidators>,
-      ComposedRefinementOf<TValidators>
+      ValueIntersectionOf<TValidators>,
+      RefinementUnionOf<TValidators>
     >
   >(
     (result, validate) => result.concat(validate(value)),
-    new ValidationResult.Succeeded(),
+    new ValidationResult.Passed(),
   );

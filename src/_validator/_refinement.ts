@@ -7,6 +7,8 @@ import {
   UnionToIntersection,
 } from '../_utils';
 
+type Extends<A, B> = Boxed<A> extends Boxed<B> ? true : false;
+
 declare const RefinementBrand: unique symbol;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Refinement<A extends Boxed<any>, B extends Boxed<any>> = {
@@ -30,8 +32,10 @@ export type ApplyRefinement<TRefinement, T> = IsNever<TRefinement> extends true
               ? Boxed<unknown>
               : IsAny<V> extends true
               ? Boxed<unknown>
-              : Boxed<T> extends Boxed<U>
-              ? Boxed<T & V>
+              : Extends<T, U> extends true
+              ? Extends<T, readonly any[]> extends true // eslint-disable-line @typescript-eslint/no-explicit-any
+                ? Boxed<V>
+                : Boxed<T & V>
               : Boxed<unknown>
             : Boxed<unknown>
         >

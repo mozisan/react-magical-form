@@ -1,13 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type IsAny<T> = any extends T ? true : false;
+export type IsAny<T> = any extends T ? true : false; // eslint-disable-line @typescript-eslint/no-explicit-any
 export type IsNever<T> = readonly [T] extends readonly [never] ? true : false;
 export type IsUnknown<T> = unknown extends T ? true : false;
 
 export type CoerceNever<A, B> = IsNever<A> extends true ? B : A;
 export type CoerceUnknown<A, B> = IsUnknown<A> extends true ? B : A;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type UnionToIntersection<T> = (T extends any
+export type UnionToIntersection<T> = (T extends any // eslint-disable-line @typescript-eslint/no-explicit-any
   ? (t: T) => void
   : never) extends ((i: infer I) => void)
   ? I

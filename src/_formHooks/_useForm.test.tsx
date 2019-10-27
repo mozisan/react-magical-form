@@ -4,23 +4,53 @@ import React, { useEffect, useRef } from 'react';
 
 import {
   checkbox,
-  max,
-  min,
+  file,
+  files,
   number,
   numberChoice,
-  range,
-  required,
   text,
   textChoice,
-  useForm,
-  ValidationError,
-} from '.';
-import { combineRefs, expectType } from './_utils';
-import { compose } from './_validator';
-import { oneOf } from './validators';
+} from '../_fieldFactories';
+import { combineRefs, expectType } from '../_utils';
+import { compose, validationError } from '../_validator';
+import {
+  max,
+  min,
+  oneOfNumbers,
+  oneOfTexts,
+  range,
+  required,
+} from '../validators';
+import { useForm } from './_useForm';
 
 describe('useForm()', () => {
   afterEach(cleanup);
+
+  it('should avoid redundant re-render', () => {
+    const detectReRender = jest.fn();
+
+    const Component: React.FC = () => {
+      const params = useForm({
+        fields: {
+          foo: text(),
+        },
+      });
+
+      useEffect(() => {
+        detectReRender();
+      }, Object.values(params)); // eslint-disable-line react-hooks/exhaustive-deps
+
+      return null;
+    };
+
+    const rendered = render(<Component />);
+
+    expect(detectReRender).toBeCalledTimes(1);
+
+    rendered.rerender(<Component />);
+
+    expect(detectReRender).toBeCalledTimes(1);
+  });
 
   describe('field()', () => {
     describe('element bindings', () => {
@@ -42,7 +72,6 @@ describe('useForm()', () => {
 
               expect(getValues().foo).not.toBe(true);
 
-              // eslint-disable-next-line functional/immutable-data
               fooInputRef.current.checked = true;
               fooInputRef.current.dispatchEvent(new Event('input'));
 
@@ -55,6 +84,94 @@ describe('useForm()', () => {
               <input
                 ref={combineRefs(field('foo'), fooInputRef)}
                 type="checkbox"
+              />
+            );
+          };
+
+          render(<Component />);
+        });
+      });
+
+      describe('file field', () => {
+        it('should update value', (done) => {
+          const dummyFile = new File(['(⌐□_□)'], 'chucknorris.png', {
+            type: 'image/png',
+          });
+
+          const Component: React.FC = () => {
+            const fooInputRef = useRef<HTMLInputElement>(null);
+
+            const { field, getValues } = useForm({
+              fields: {
+                foo: file(),
+              },
+            });
+
+            useEffect(() => {
+              if (fooInputRef.current == null) {
+                throw new Error();
+              }
+
+              expect(getValues().foo).toBe(undefined);
+
+              fireEvent.change(fooInputRef.current, {
+                target: {
+                  files: [dummyFile],
+                },
+              });
+
+              expect(getValues().foo).toBe(dummyFile);
+
+              done();
+            }, [getValues]);
+
+            return (
+              <input ref={combineRefs(field('foo'), fooInputRef)} type="file" />
+            );
+          };
+
+          render(<Component />);
+        });
+      });
+
+      describe('files field', () => {
+        it('should update value', (done) => {
+          const dummyFile = new File(['(⌐□_□)'], 'chucknorris.png', {
+            type: 'image/png',
+          });
+
+          const Component: React.FC = () => {
+            const fooInputRef = useRef<HTMLInputElement>(null);
+
+            const { field, getValues } = useForm({
+              fields: {
+                foo: files(),
+              },
+            });
+
+            useEffect(() => {
+              if (fooInputRef.current == null) {
+                throw new Error();
+              }
+
+              expect(getValues().foo).toEqual([]);
+
+              fireEvent.change(fooInputRef.current, {
+                target: {
+                  files: [dummyFile],
+                },
+              });
+
+              expect(getValues().foo).toEqual([dummyFile]);
+
+              done();
+            }, [getValues]);
+
+            return (
+              <input
+                ref={combineRefs(field('foo'), fooInputRef)}
+                type="file"
+                multiple
               />
             );
           };
@@ -81,7 +198,6 @@ describe('useForm()', () => {
 
               expect(getValues().foo).not.toBe(1);
 
-              // eslint-disable-next-line functional/immutable-data
               fooInputRef.current.value = '1';
               fooInputRef.current.dispatchEvent(new Event('input'));
 
@@ -175,7 +291,6 @@ describe('useForm()', () => {
 
               expect(getValues().foo).not.toBe('dummy');
 
-              // eslint-disable-next-line functional/immutable-data
               fooInputRef.current.value = 'dummy';
               fooInputRef.current.dispatchEvent(new Event('input'));
 
@@ -216,7 +331,7 @@ describe('useForm()', () => {
                 throw new Error();
               }
 
-              expect(getValues().foo).toBe('');
+              expect(getValues().foo).toBe(undefined);
 
               fooOfBarInputRef.current.click();
 
@@ -338,18 +453,15 @@ describe('useForm()', () => {
       };
 
       const submitEvent = new Event('submit');
-      // eslint-disable-next-line @typescript-eslint/unbound-method, functional/immutable-data
-      submitEvent.preventDefault = jest.fn();
+      submitEvent.preventDefault = jest.fn(); // eslint-disable-line @typescript-eslint/unbound-method, functional/immutable-data
 
       const { getByTestId } = render(<Component />);
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(submitEvent.preventDefault).not.toBeCalled();
+      expect(submitEvent.preventDefault).not.toBeCalled(); // eslint-disable-line @typescript-eslint/unbound-method
 
       getByTestId('form').dispatchEvent(submitEvent);
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(submitEvent.preventDefault).toBeCalled();
+      expect(submitEvent.preventDefault).toBeCalled(); // eslint-disable-line @typescript-eslint/unbound-method
     });
 
     it('should call options.onSubmit() with correct payload', () => {
@@ -374,7 +486,7 @@ describe('useForm()', () => {
       fireEvent.submit(getByTestId('form'));
 
       expect(onSubmitMock).toBeCalledWith({
-        foo: expect.any(String),
+        foo: '',
       });
     });
 
@@ -493,6 +605,70 @@ describe('useForm()', () => {
         });
       });
 
+      describe('file', () => {
+        it('should refinement types correctly', () => {
+          const { result } = renderHook(() =>
+            useForm({
+              fields: {
+                foo: file(),
+                bar: file({
+                  spec: required(),
+                }),
+              },
+            }),
+          );
+
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
+              readonly foo: File | undefined;
+              readonly bar: File | undefined;
+            }>()
+            .assert();
+
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: File | undefined;
+                readonly bar: File;
+              }>()
+              .assert();
+          });
+        });
+      });
+
+      describe('files', () => {
+        it('should refinement types correctly', () => {
+          const { result } = renderHook(() =>
+            useForm({
+              fields: {
+                foo: files(),
+                bar: files({
+                  spec: required(),
+                }),
+              },
+            }),
+          );
+
+          const values = result.current.getValues();
+          expectType<typeof values>()
+            .as<{
+              readonly foo: readonly File[];
+              readonly bar: readonly File[];
+            }>()
+            .assert();
+
+          result.current.handleSubmit((data) => {
+            expectType<typeof data>()
+              .as<{
+                readonly foo: readonly File[];
+                readonly bar: readonly [File, ...readonly File[]];
+              }>()
+              .assert();
+          });
+        });
+      });
+
       describe('number', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
@@ -536,7 +712,7 @@ describe('useForm()', () => {
                 bar: numberChoice({
                   spec: compose(
                     required(),
-                    oneOf(1, 2),
+                    oneOfNumbers(1, 2),
                   ),
                 }),
               },
@@ -573,7 +749,7 @@ describe('useForm()', () => {
                 bar: textChoice({
                   spec: compose(
                     required(),
-                    oneOf('a', 'b'),
+                    oneOfTexts('a', 'b'),
                   ),
                 }),
               },
@@ -614,23 +790,24 @@ describe('useForm()', () => {
               spec: min(1),
             }),
           },
-          rules: {
-            bar: (value, { foo }) => {
-              if (value == null || foo == null) {
-                return;
-              }
-
-              if (value < foo) {
-                return new ValidationError(
-                  'should be smaller than the value of `foo`.',
-                );
-              }
-            },
-          },
         }),
       );
 
       act(() => {
+        result.current.useRules({
+          bar: (value, { foo }) => {
+            if (value == null || foo == null) {
+              return;
+            }
+
+            if (value < foo) {
+              return validationError(
+                'should be smaller than the value of `foo`.',
+              );
+            }
+          },
+        });
+
         expect(result.current.validate()).toEqual({
           foo: [],
           bar: [

@@ -10,9 +10,9 @@ describe('createRangeValidatorFactory()', () => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
-    const validValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const validValues = [undefined, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });
   });
 });

@@ -7,8 +7,7 @@ import {
 import { Field } from './_field';
 
 export type Options<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly name: string;
   readonly initial?: number;
@@ -16,15 +15,12 @@ export type Options<
 };
 
 export class NumberChoiceField<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > implements Field<number | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private elements: readonly HTMLInputElement[] = [];
+  private elements: readonly HTMLInputElement[] = []; // eslint-disable-line functional/prefer-readonly-type
   private readonly initialValue?: number;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private value?: number;
+  private value?: number; // eslint-disable-line functional/prefer-readonly-type
   private readonly validateValue: Validator<number | undefined, TRefinement>;
   private readonly updateEvent = 'input';
 
@@ -47,7 +43,7 @@ export class NumberChoiceField<
     const expectedType = 'radio';
     if (element.type !== expectedType) {
       throw new Error(
-        `NumberChoiceField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
+        `NumberChoiceField can be bound only to HTMLInputElement whose type is \`${expectedType}\`.`,
       );
     }
 
@@ -67,8 +63,7 @@ export class NumberChoiceField<
       );
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.elements = [...this.elements, element];
+    this.elements = [...this.elements, element]; // eslint-disable-line functional/immutable-data
 
     if (this.value != null) {
       this.setValue(this.value);
@@ -85,12 +80,10 @@ export class NumberChoiceField<
     const nanCoercedValue =
       value != null && Number.isNaN(value) ? undefined : value;
 
-    // eslint-disable-next-line functional/immutable-data
-    this.value = nanCoercedValue;
+    this.value = nanCoercedValue; // eslint-disable-line functional/immutable-data
 
     this.elements.forEach((element) => {
-      // eslint-disable-next-line functional/immutable-data
-      element.checked = element.value === `${nanCoercedValue}`;
+      element.checked = element.value === `${nanCoercedValue}`; // eslint-disable-line functional/immutable-data
     });
   }
 
@@ -119,9 +112,10 @@ export class NumberChoiceField<
     TRefinement,
     number | undefined
   > {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of NumberChoiceField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, number | undefined>;

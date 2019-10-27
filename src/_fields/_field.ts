@@ -7,8 +7,7 @@ export type InputElements =
 
 export type Field<
   TValue,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement.Factory<TValue, any>,
+  TRefinement extends Refinement.Factory<TValue, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
   TElement extends InputElements = InputElements
 > = {
   readonly name: string;

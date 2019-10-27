@@ -7,8 +7,7 @@ import {
 import { Field, InputElements } from './_field';
 
 export type Options<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly name: string;
   readonly initial?: string;
@@ -16,15 +15,12 @@ export type Options<
 };
 
 export class TextField<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > implements Field<string, TRefinement, InputElements> {
   public readonly name: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private element: InputElements | null = null;
+  private element: InputElements | null = null; // eslint-disable-line functional/prefer-readonly-type
   private readonly initialValue: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private value: string;
+  private value: string; // eslint-disable-line functional/prefer-readonly-type
   private readonly validateValue: Validator<string, TRefinement>;
   private readonly updateEvent = 'input';
 
@@ -60,8 +56,7 @@ export class TextField<
       );
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.element = element;
+    this.element = element; // eslint-disable-line functional/immutable-data
 
     if (this.value != null) {
       this.setValue(this.value);
@@ -75,15 +70,13 @@ export class TextField<
   }
 
   public setValue(value: string): void {
-    // eslint-disable-next-line functional/immutable-data
-    this.value = value;
+    this.value = value; // eslint-disable-line functional/immutable-data
 
     if (this.element == null) {
       return;
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.element.value = value;
+    this.element.value = value; // eslint-disable-line functional/immutable-data
   }
 
   public validate(): ValidationResult<string, TRefinement> {
@@ -107,9 +100,10 @@ export class TextField<
   }
 
   public dangerouslyGetRefinedValue(): ApplyRefinement<TRefinement, string> {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of TextField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, string>;

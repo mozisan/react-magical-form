@@ -10,9 +10,9 @@ describe('createPatternValidatorFactory()', () => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
-    const validValues = ['-hoge-', 'aaa-hoge-bbb', '-hoge--'];
+    const validValues = [undefined, '-hoge-', 'aaa-hoge-bbb', '-hoge--'];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });
   });
 });

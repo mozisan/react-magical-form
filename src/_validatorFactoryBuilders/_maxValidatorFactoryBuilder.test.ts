@@ -10,9 +10,9 @@ describe('createMaxValidatorFactory()', () => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
-    const validValues = [-100, -10, -1, 0, 1, 10];
+    const validValues = [undefined, -100, -10, -1, 0, 1, 10];
     validValues.forEach((value) => {
-      expect(validate(value)).toBeInstanceOf(ValidationResult.Succeeded);
+      expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });
   });
 });

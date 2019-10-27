@@ -1,3 +1,3 @@
 import { createRequiredValidatorBuilder } from '../../_validatorFactoryBuilders';
 
-export const required = createRequiredValidatorBuilder(() => `値は必須です。`);
+export const required = createRequiredValidatorBuilder(() => `必須です。`);

@@ -1,16 +1,16 @@
 import { ValidationResult } from '../_validator';
-import { createMinValidatorFactory } from './_minValidatorFactoryBuilder';
+import { createIntegerValidatorFactory } from './_integerValidatorFactoryBuilder';
 
-describe('createMinValidatorFactory()', () => {
+describe('createIntegerValidatorFactory()', () => {
   it('should return validator which works correctly', () => {
-    const validate = createMinValidatorFactory(() => '')(0);
+    const validate = createIntegerValidatorFactory(() => '')();
 
-    const invalidValues = [-100, -10, -1];
+    const invalidValues = [-100.1, -10.1, -1.1, 0.1, 1.1, 10.1, 100.1];
     invalidValues.forEach((value) => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
-    const validValues = [undefined, 0, 1, 10, 100];
+    const validValues = [undefined, -100, -10, -1, 0, 1, 10, 100];
     validValues.forEach((value) => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });

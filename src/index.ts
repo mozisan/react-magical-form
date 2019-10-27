@@ -1,16 +1,19 @@
 export {
   checkbox,
+  file,
+  files,
   number,
   numberChoice,
   text,
   textChoice,
 } from './_fieldFactories';
+export { useForm } from './_formHooks';
 export {
   compose,
-  ValidationError,
+  createStaticValidatorFactoryBuilder,
+  Refinement,
+  validationError,
   ValidationResult,
   Validator,
 } from './_validator';
-export { createStaticValidatorFactoryBuilder } from './_validatorFactory';
 export * from './validators';
-export { useForm } from './_useForm';

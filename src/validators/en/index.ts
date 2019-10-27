@@ -1,6 +1,10 @@
+export { integer } from './_integer';
 export { max } from './_max';
+export { maxLength } from './_maxLength';
 export { min } from './_min';
-export { oneOf } from './_oneOf';
+export { minLength } from './_minLength';
+export { oneOfNumbers } from './_oneOfNumbers';
+export { oneOfTexts } from './_oneOfTexts';
 export { pattern } from './_pattern';
 export { range } from './_range';
 export { required } from './_required';

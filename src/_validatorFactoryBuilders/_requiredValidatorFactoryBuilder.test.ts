@@ -1,16 +1,16 @@
 import { ValidationResult } from '../_validator';
-import { createMinValidatorFactory } from './_minValidatorFactoryBuilder';
+import { createRequiredValidatorBuilder } from './_requiredValidatorFactoryBuilder';
 
-describe('createMinValidatorFactory()', () => {
+describe('createRequiredValidatorBuilder()', () => {
   it('should return validator which works correctly', () => {
-    const validate = createMinValidatorFactory(() => '')(0);
+    const validate = createRequiredValidatorBuilder(() => '')();
 
-    const invalidValues = [-100, -10, -1];
+    const invalidValues = [undefined, false, '', []];
     invalidValues.forEach((value) => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Failed);
     });
 
-    const validValues = [undefined, 0, 1, 10, 100];
+    const validValues = [true, 'foo', [1], ['foo']];
     validValues.forEach((value) => {
       expect(validate(value)).toBeInstanceOf(ValidationResult.Passed);
     });

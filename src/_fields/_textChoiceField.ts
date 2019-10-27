@@ -7,8 +7,7 @@ import {
 import { Field } from './_field';
 
 export type Options<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly name: string;
   readonly initial?: string;
@@ -16,21 +15,18 @@ export type Options<
 };
 
 export class TextChoiceField<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TRefinement extends Refinement<any, any>
+  TRefinement extends Refinement<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > implements Field<string | undefined, TRefinement, HTMLInputElement> {
   public readonly name: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private elements: readonly HTMLInputElement[] = [];
-  private readonly initialValue: string;
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private value?: string;
+  private elements: readonly HTMLInputElement[] = []; // eslint-disable-line functional/prefer-readonly-type
+  private readonly initialValue?: string;
+  private value?: string; // eslint-disable-line functional/prefer-readonly-type
   private readonly validateValue: Validator<string | undefined, TRefinement>;
   private readonly updateEvent = 'input';
 
   public constructor({
     name,
-    initial: initialValue = '',
+    initial: initialValue,
     spec: validator = Validator.Noop,
   }: Options<TRefinement>) {
     this.name = name;
@@ -47,7 +43,7 @@ export class TextChoiceField<
     const expectedType = 'radio';
     if (element.type !== expectedType) {
       throw new Error(
-        `TextChoiceField can be bound only to HTMLInputElement which type is \`${expectedType}\`.`,
+        `TextChoiceField can be bound only to HTMLInputElement whose type is \`${expectedType}\`.`,
       );
     }
 
@@ -67,8 +63,7 @@ export class TextChoiceField<
       );
     }
 
-    // eslint-disable-next-line functional/immutable-data
-    this.elements = [...this.elements, element];
+    this.elements = [...this.elements, element]; // eslint-disable-line functional/immutable-data
 
     if (this.value != null) {
       this.setValue(this.value);
@@ -78,17 +73,21 @@ export class TextChoiceField<
   }
 
   public getValue(): string | undefined {
+    const checkedElement = this.elements.find((element) => element.checked);
+    if (checkedElement == null) {
+      return;
+    }
+
     return this.value;
   }
 
   public setValue(value?: string): void {
-    // eslint-disable-next-line functional/immutable-data
-    this.value = value;
-
     this.elements.forEach((element) => {
-      // eslint-disable-next-line functional/immutable-data
-      element.checked = element.value === value;
+      element.checked = element.value === value; // eslint-disable-line functional/immutable-data
     });
+
+    const checkedElement = this.elements.find((element) => element.checked);
+    this.value = checkedElement != null ? value : undefined; // eslint-disable-line functional/immutable-data
   }
 
   public validate(): ValidationResult<string | undefined, TRefinement> {
@@ -116,9 +115,10 @@ export class TextChoiceField<
     TRefinement,
     string | undefined
   > {
-    const result = this.validate();
-    if (result.type === 'failed') {
-      throw new Error();
+    if (this.validate().isFailed) {
+      throw new Error(
+        `dangerouslyGetRefinedValue() of TextChoiceField for \`${this.name}\` is called, but validation failed.`,
+      );
     }
 
     return this.getValue() as ApplyRefinement<TRefinement, string | undefined>;
