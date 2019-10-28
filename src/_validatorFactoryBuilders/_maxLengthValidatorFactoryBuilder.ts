@@ -9,13 +9,13 @@ type AcceptableValue =
 export const createMaxLengthValidatorBuilder = (
   errorFormatter: (limit: number) => string,
 ) => (limit: number): Validator<AcceptableValue | undefined, never> => (
-  value,
+  fieldValue,
 ) => {
-  if (value == null) {
+  if (fieldValue == null) {
     return new ValidationResult.Passed();
   }
 
-  if (value.length <= limit) {
+  if (fieldValue.length <= limit) {
     return new ValidationResult.Passed();
   }
 

@@ -8,17 +8,15 @@ import {
 type Refinements<T> = Refinement.Factory<any, T | undefined>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export const createExactValidatorBuilder = (
-  errorFormatter: (value: string | number) => string, // eslint-disable-line @typescript-eslint/no-explicit-any
+  errorFormatter: (value: number | string) => string, // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => <T extends string | number>(
-  exactValue: T,
+  value: T,
   compare: (a: any, b: any) => boolean = (a, b) => a === b, // eslint-disable-line @typescript-eslint/no-explicit-any
 ): // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Validator<any, Refinements<T>> => (value) => {
-  if (value == null || compare(value, exactValue)) {
+Validator<any, Refinements<T>> => (fieldValue) => {
+  if (fieldValue == null || compare(fieldValue, value)) {
     return new ValidationResult.Passed();
   }
 
-  return new ValidationResult.Failed(
-    validationError(errorFormatter(exactValue)),
-  );
+  return new ValidationResult.Failed(validationError(errorFormatter(value)));
 };

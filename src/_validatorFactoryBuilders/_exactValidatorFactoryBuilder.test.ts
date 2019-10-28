@@ -29,17 +29,15 @@ describe('createExactValidatorBuilder()', () => {
     it('should refine types correctly', () => {
       const { result } = renderHook(() =>
         useForm({
-          fields: {
-            foo: text({
-              spec: exact('foo'),
-            }),
-            bar: textChoice({
-              spec: exact('bar'),
-            }),
-            baz: number({
-              spec: exact(1),
-            }),
-          },
+          foo: text({
+            spec: exact('foo'),
+          }),
+          bar: textChoice({
+            spec: exact('bar'),
+          }),
+          baz: number({
+            spec: exact(1),
+          }),
         }),
       );
 
@@ -66,23 +64,21 @@ describe('createExactValidatorBuilder()', () => {
     it('should be able to use with required()', () => {
       const { result } = renderHook(() =>
         useForm({
-          fields: {
-            foo: text({
-              spec: exact('foo'),
-            }),
-            bar: textChoice({
-              spec: compose(
-                required(),
-                exact('bar'),
-              ),
-            }),
-            baz: number({
-              spec: compose(
-                required(),
-                exact(1),
-              ),
-            }),
-          },
+          foo: text({
+            spec: exact('foo'),
+          }),
+          bar: textChoice({
+            spec: compose(
+              required(),
+              exact('bar'),
+            ),
+          }),
+          baz: number({
+            spec: compose(
+              required(),
+              exact(1),
+            ),
+          }),
         }),
       );
 

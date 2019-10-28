@@ -2,8 +2,10 @@ import { ValidationResult } from '../_validator';
 import { createRangeValidatorFactory } from './_rangeValidatorFactoryBuilder';
 
 describe('createRangeValidatorFactory()', () => {
+  const range = createRangeValidatorFactory(() => '');
+
   it('should return validator which works correctly', () => {
-    const validate = createRangeValidatorFactory(() => '')(1, 10);
+    const validate = range(1, 10);
 
     const invalidValues = [-1, 0, 11, 100];
     invalidValues.forEach((value) => {

@@ -2,8 +2,10 @@ import { ValidationResult } from '../_validator';
 import { createOneOfNumbersValidatorBuilder } from './_oneOfNumbersValidatorFactoryBuilder';
 
 describe('createOneOfNumbersValidatorBuilder()', () => {
+  const oneOfNumbers = createOneOfNumbersValidatorBuilder(() => '');
+
   it('should return validator which works correctly', () => {
-    const validate = createOneOfNumbersValidatorBuilder(() => '')(1, 2);
+    const validate = oneOfNumbers(1, 2);
 
     const invalidValues = [0, 3, 4, 5];
     invalidValues.forEach((value) => {

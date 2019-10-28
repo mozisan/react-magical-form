@@ -1,3 +1,4 @@
+export { confirmationOf } from './_confirmationOf';
 export { exact } from './_exact';
 export { integer } from './_integer';
 export { max } from './_max';
