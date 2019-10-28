@@ -34,11 +34,9 @@ import { checkbox, number, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, handleSubmit } = useForm({
-    fields: {
-      name: text(),
-      age: number(),
-      acceptsPolicy: checkbox(),
-    },
+    name: text(),
+    age: number(),
+    acceptsPolicy: checkbox(),
   });
 
   return (
@@ -77,9 +75,7 @@ import { text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: text({ initial: '' }),
-    },
+    foo: text({ initial: '' }),
   });
 
   getValues().foo; //=> string
@@ -98,9 +94,7 @@ import { number, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: number({ initial: undefined }),
-    },
+    foo: number({ initial: undefined }),
   });
 
   getValues().foo; //=> number | undefined
@@ -119,9 +113,7 @@ import { checkbox, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: checkbox({ initial: false }),
-    },
+    foo: checkbox({ initial: false }),
   });
 
   getValues().foo; //=> boolean
@@ -140,9 +132,7 @@ import { textChoice, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: textChoice({ initial: undefined }),
-    },
+    foo: textChoice({ initial: undefined }),
   });
 
   getValues().foo; //=> string | undefined
@@ -173,9 +163,7 @@ import { numberChoice, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: numberChoice({ initial: undefined }),
-    },
+    foo: numberChoice({ initial: undefined }),
   });
 
   getValues().foo; //=> number | undefined
@@ -206,9 +194,7 @@ import { file, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: file(),
-    },
+    foo: file(),
   });
 
   getValues().foo; //=> File | undefined
@@ -227,9 +213,7 @@ import { files, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field, getValues } = useForm({
-    fields: {
-      foo: files(),
-    },
+    foo: files(),
   });
 
   getValues().foo; //=> readonly File[]
@@ -260,29 +244,27 @@ import {
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: text({
-        spec: required(), // should not be empty
-      }),
-      f2: textChoice({
-        spec: required(), // should be selected
-      }),
-      f3: number({
-        spec: required(), // should be empty and a number value
-      }),
-      f4: numberChoice({
-        spec: required(), // should be selected
-      }),
-      f5: checkbox({
-        spec: required(), // should be checked
-      }),
-      f6: file({
-        spec: required(), // should be uploaded
-      }),
-      f7: files({
-        spec: required(), // should be uploaded at least one
-      }),
-    },
+    f1: text({
+      spec: required(), // should not be empty
+    }),
+    f2: textChoice({
+      spec: required(), // should be selected
+    }),
+    f3: number({
+      spec: required(), // should be empty and a number value
+    }),
+    f4: numberChoice({
+      spec: required(), // should be selected
+    }),
+    f5: checkbox({
+      spec: required(), // should be checked
+    }),
+    f6: file({
+      spec: required(), // should be uploaded
+    }),
+    f7: files({
+      spec: required(), // should be uploaded at least one
+    }),
   });
 
   return null;
@@ -297,11 +279,9 @@ import { minLength, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: text({
-        spec: minLength(10), // should have length which is greater than or equal to 10
-      }),
-    },
+    f1: text({
+      spec: minLength(10), // should have length which is greater than or equal to 10
+    }),
   });
 
   return null;
@@ -316,11 +296,9 @@ import { maxLength, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: text({
-        spec: maxLength(32), // should have length which is smaller than or equal to 32
-      }),
-    },
+    f1: text({
+      spec: maxLength(32), // should have length which is smaller than or equal to 32
+    }),
   });
 
   return null;
@@ -335,11 +313,9 @@ import { pattern, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: text({
-        spec: pattern(/-foo-/), // should match given pattern
-      }),
-    },
+    f1: text({
+      spec: pattern(/-foo-/), // should match given pattern
+    }),
   });
 
   return null;
@@ -354,11 +330,9 @@ import { oneOfTexts, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: text({
-        spec: oneOfTexts('foo', 'bar', 'baz'), // should be one of 'foo', 'bar', and 'baz'
-      }),
-    },
+    f1: text({
+      spec: oneOfTexts('foo', 'bar', 'baz'), // should be one of 'foo', 'bar', and 'baz'
+    }),
   });
 
   return null;
@@ -373,11 +347,9 @@ import { min, number, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: number({
-        spec: min(1), // should be greater than or equal to 1
-      }),
-    },
+    f1: number({
+      spec: min(1), // should be greater than or equal to 1
+    }),
   });
 
   return null;
@@ -392,11 +364,9 @@ import { max, number, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: number({
-        spec: max(10), // should be smaller than or equal to 10
-      }),
-    },
+    f1: number({
+      spec: max(10), // should be smaller than or equal to 10
+    }),
   });
 
   return null;
@@ -411,11 +381,9 @@ import { number, range, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: number({
-        spec: range(0, 10), // should be between 0 and 10
-      }),
-    },
+    f1: number({
+      spec: range(0, 10), // should be between 0 and 10
+    }),
   });
 
   return null;
@@ -430,11 +398,9 @@ import { integer, number, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: number({
-        spec: integer, // should be an integer
-      }),
-    },
+    f1: number({
+      spec: integer, // should be an integer
+    }),
   });
 
   return null;
@@ -449,51 +415,65 @@ import { oneOfNumbers, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   useForm({
-    fields: {
-      f1: text({
-        spec: oneOfNumbers(1, 2, 3), // should be one of 1, 2, and 3
-      }),
-    },
+    f1: text({
+      spec: oneOfNumbers(1, 2, 3), // should be one of 1, 2, and 3
+    }),
   });
 
   return null;
 };
 ```
 
+#### `exact<T extends number | string>(value: T)`
+
+```tsx
+import React from 'react';
+import { exact, text, useForm } from 'react-magical-form';
+
+export const Form: React.FC = () => {
+  useForm({
+    f1: text({
+      spec: exact('foo'), // should be 'foo'
+    }),
+  });
+
+  return null;
+};
+```
+
+#### `confirmationOf<T extends number | string>(value: T)`
+
+Alias to `exact()`, but its default error message is different.  
+This is supporsed to used in [`useRules()`](#form-rules).
+
 ### Form rules
+
+If some fields have rules depend on other fields, use `useRules()`.
 
 ```tsx
 import React from 'react';
 import {
-  number,
-  numberChoice,
+  confirmationOf,
   required,
+  text,
   useForm,
   validationError,
 } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { useRules } = useForm({
-    fields: {
-      beginning: number({
-        spec: required(),
-      }),
-      end: numberChoice({
-        spec: required(),
-      }),
-    },
+    password: text({
+      spec: required(),
+    }),
+    passwordConfirmation: text({
+      spec: required(),
+    }),
   });
 
-  useRules({
-    end: (value, otherValues) => {
-      if (value == null || otherValues.beginning == null) {
-        return;
-      }
-
-      if (value < otherValues.beginning) {
-        return validationError('`end` should not be smaller than `beginning`.');
-      }
-    },
+  // If you use `useRules()`, DO NOT USE any apis from `useForm()` except `useRules()`.
+  // Instead, use apis from `useRules()`.
+  const { errors, field, getValues, ...apis } = useRules({
+    passwordConfirmation: (otherValues) => confirmationOf(otherValues.password),
   });
 
   return null;
@@ -522,26 +502,24 @@ import {
 
 export const Form: React.FC = () => {
   const { getValues, handleSubmit } = useForm({
-    fields: {
-      f1: textChoice({
-        spec: required(),
-      }),
-      f2: number({
-        spec: required(),
-      }),
-      f3: numberChoice({
-        spec: required(),
-      }),
-      f4: checkbox({
-        spec: required(),
-      }),
-      f5: file({
-        spec: required(),
-      }),
-      f6: files({
-        spec: required(),
-      }),
-    },
+    f1: textChoice({
+      spec: required(),
+    }),
+    f2: number({
+      spec: required(),
+    }),
+    f3: numberChoice({
+      spec: required(),
+    }),
+    f4: checkbox({
+      spec: required(),
+    }),
+    f5: file({
+      spec: required(),
+    }),
+    f6: files({
+      spec: required(),
+    }),
   });
 
   getValues().f1; //=> string | undefined
@@ -581,11 +559,9 @@ import {
 
 export const Form: React.FC = () => {
   const { getValues, handleSubmit } = useForm({
-    fields: {
-      f1: textChoice({
-        spec: oneOfTexts('foo', 'bar'),
-      }),
-    },
+    f1: textChoice({
+      spec: oneOfTexts('foo', 'bar'),
+    }),
   });
 
   getValues().f1; //=> string | undefined
@@ -615,14 +591,12 @@ import {
 
 export const Form: React.FC = () => {
   const { getValues, handleSubmit } = useForm({
-    fields: {
-      f1: number({
-        spec: oneOfNumbers(1, 2),
-      }),
-      f2: numberChoice({
-        spec: oneOfNumbers(1, 2),
-      }),
-    },
+    f1: number({
+      spec: oneOfNumbers(1, 2),
+    }),
+    f2: numberChoice({
+      spec: oneOfNumbers(1, 2),
+    }),
   });
 
   getValues().f1; //=> number | undefined
@@ -656,26 +630,24 @@ import {
 
 export const Form: React.FC = () => {
   const { getValues, handleSubmit } = useForm({
-    fields: {
-      f1: textChoice({
-        spec: oneOfTexts('foo', 'bar'),
-      }),
-      f2: textChoice({
-        spec: compose(
-          required(),
-          oneOfTexts('foo', 'bar'),
-        ),
-      }),
-      f3: number({
-        spec: oneOfNumbers(1, 2),
-      }),
-      f4: numberChoice({
-        spec: compose(
-          required(),
-          oneOfNumbers(1, 2),
-        ),
-      }),
-    },
+    f1: textChoice({
+      spec: oneOfTexts('foo', 'bar'),
+    }),
+    f2: textChoice({
+      spec: compose(
+        required(),
+        oneOfTexts('foo', 'bar'),
+      ),
+    }),
+    f3: number({
+      spec: oneOfNumbers(1, 2),
+    }),
+    f4: numberChoice({
+      spec: compose(
+        required(),
+        oneOfNumbers(1, 2),
+      ),
+    }),
   });
 
   getValues().f1; //=> string | undefined
@@ -696,6 +668,49 @@ export const Form: React.FC = () => {
 };
 ```
 
+### Refinement by `useRules()`
+
+```tsx
+import React from 'react';
+import {
+  compose,
+  confirmationOf,
+  oneOfTexts,
+  required,
+  text,
+  textChoice,
+  useForm,
+} from 'react-magical-form';
+
+export const Form: React.FC = () => {
+  const { useRules } = useForm({
+    field: textChoice({
+      spec: compose(
+        required(),
+        oneOfTexts('foo', 'bar'),
+      ),
+    }),
+    fieldConfirmation: text(),
+  });
+
+  const { getValues, handleSubmit } = useRules({
+    fieldConfirmation: (otherFields) => confirmationOf(otherFields.field),
+  });
+
+  getValues().field; //=> string | string
+  getValues().fieldConfirmation; //=> string
+
+  return (
+    <form
+      onSubmit={handleSubmit((values) => {
+        values.field; //=> "foo" | "bar"
+        values.fieldConfirmation; //=> "foo" | "bar"
+      })}
+    />
+  );
+};
+```
+
 ## APIs
 
 ### `field(fieldName: <NAME_OF_FIELD>)`
@@ -708,9 +723,7 @@ import { text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { field } = useForm({
-    fields: {
-      f1: text(),
-    },
+    f1: text(),
   });
 
   return <input ref={field('f1')} />;
@@ -719,30 +732,20 @@ export const Form: React.FC = () => {
 
 ### `useRules(rules: <FORM_RULES>)`
 
-Set form rules.
+Set form rules and return new form APIs.
 
 ```tsx
 const { useRules } = useForm({
-  fields: {
-    beginning: number({
-      spec: required(),
-    }),
-    end: numberChoice({
-      spec: required(),
-    }),
-  },
+  beginning: number({
+    spec: required(),
+  }),
+  end: numberChoice({
+    spec: required(),
+  }),
 });
 
-useRules({
-  end: (value, otherValues) => {
-    if (value == null || otherValues.beginning == null) {
-      return;
-    }
-
-    if (value < otherValues.beginning) {
-      return validationError('`end` should not be smaller than `beginning`.');
-    }
-  },
+const { errors, field, getValues, ...apis } = useRules({
+  end: (otherValues) => min(otherValues.beginning),
 });
 
 return null;
@@ -756,10 +759,8 @@ import { number, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { getValues } = useForm({
-    fields: {
-      f1: text(),
-      f2: number(),
-    },
+    f1: text(),
+    f2: number(),
   });
 
   getValues(); //=> { "f1": string, "f2": number | undefined }
@@ -776,9 +777,7 @@ import { number, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { setValue } = useForm({
-    fields: {
-      f1: number(),
-    },
+    f1: number(),
   });
 
   setValue('f1', 0);
@@ -796,10 +795,8 @@ import { number, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { setValues } = useForm({
-    fields: {
-      f1: text(),
-      f2: number(),
-    },
+    f1: text(),
+    f2: number(),
   });
 
   setValues({
@@ -821,11 +818,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { errors } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   errors; //=> { "f1": readonly string[] }
@@ -844,11 +839,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { validate } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   useEffect(() => {
@@ -869,11 +862,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { reset } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   useEffect(() => {
@@ -894,11 +885,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { clear } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   useEffect(() => {
@@ -919,11 +908,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { clearErrors } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   useEffect(() => {
@@ -944,11 +931,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { handleSubmit } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   return <form onSubmit={handleSubmit(() => {})} />;
@@ -963,11 +948,9 @@ import { required, text, useForm } from 'react-magical-form';
 
 export const Form: React.FC = () => {
   const { isSubmitting } = useForm({
-    fields: {
-      f1: text({
-        spec: required(),
-      }),
-    },
+    f1: text({
+      spec: required(),
+    }),
   });
 
   isSubmitting; //=> boolean
