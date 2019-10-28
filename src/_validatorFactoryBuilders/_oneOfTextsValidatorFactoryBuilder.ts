@@ -15,12 +15,12 @@ export const createOneOfTextsValidatorBuilder = (
 ) => <T extends string>(
   ...values: readonly [T, ...readonly T[]]
 ): // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Validator<string | undefined, Refinements<T>> => (value) => {
-  if (value == null) {
+Validator<any, Refinements<T>> => (fieldValue) => {
+  if (fieldValue == null) {
     return new ValidationResult.Passed();
   }
 
-  if (values.find((item) => item === value) != null) {
+  if (values.find((value) => value === fieldValue) != null) {
     return new ValidationResult.Passed();
   }
 

@@ -2,8 +2,15 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { FieldFactory } from '../_fieldFactories';
 import { InputElements } from '../_fields';
-import { KeyOf, mapValues, useLatestRef, values } from '../_utils';
-import { ValidationError } from '../_validator';
+import {
+  KeyOf,
+  mapObject,
+  mapValues,
+  someValue,
+  useLatestRef,
+  values,
+} from '../_utils';
+import { ApplyRefinement, Validator } from '../_validator';
 
 type FormValuesOf<
   TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -13,11 +20,23 @@ type FormValuesOf<
   >;
 };
 
-type RefinedFormValuesOf<
+type RefinedFieldValuesOf<
   TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly [TKey in KeyOf<TFields>]: ReturnType<
     ReturnType<TFields[TKey]>['dangerouslyGetRefinedValue']
+  >;
+};
+
+type RefinedFormValuesOf<
+  TFields extends Record<string, FieldFactory<any, any, any>>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  TRules extends FormRuleFactoriesOf<TFields, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+> = {
+  readonly [TKey in KeyOf<RefinedFieldValuesOf<TFields>>]: ApplyRefinement<
+    TRules[TKey] extends FormRule<any, Validator<any, infer TRuleRefinement>> // eslint-disable-line @typescript-eslint/no-explicit-any
+      ? TRuleRefinement
+      : never,
+    RefinedFieldValuesOf<TFields>[TKey]
   >;
 };
 
@@ -45,26 +64,29 @@ const getFirstErrorColumn = <
   return found && found.column;
 };
 
-type FieldRule<TFieldValue, TFormValue> = (
-  fieldValue: TFieldValue,
-  formValues: TFormValue,
-) => ValidationError | undefined;
+type FormRule<
+  TFormValues,
+  TValidator extends Validator<any, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+> = (values: TFormValues) => TValidator | undefined;
 
-type FormRulesOf<
-  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+type FormRuleFactoriesOf<
+  TFields extends Record<string, FieldFactory<any, any, any>>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  TValidators extends Record<KeyOf<TFields>, Validator<any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
-  readonly [TKey in KeyOf<TFields>]?: FieldRule<
-    ReturnType<ReturnType<TFields[TKey]>['getValue']>,
-    Omit<FormValuesOf<TFields>, TKey>
+  readonly [TKey in KeyOf<TFields>]?: FormRule<
+    Omit<RefinedFieldValuesOf<TFields>, TKey>,
+    TValidators[TKey]
   >;
 };
 
 type SubmitHandlerCallbackOf<
-  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
-> = (values: RefinedFormValuesOf<TFields>) => void | Promise<void>;
+  TFields extends Record<string, FieldFactory<any, any, any>>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  TRules extends FormRuleFactoriesOf<TFields, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+> = (values: RefinedFormValuesOf<TFields, TRules>) => void | Promise<void>;
 
-export type Form<
-  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+type Form<
+  TFields extends Record<string, FieldFactory<any, any, any>>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  TRules extends FormRuleFactoriesOf<TFields, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly errors: FormErrorsOf<TFields>;
   readonly isSubmitting: boolean;
@@ -82,36 +104,43 @@ export type Form<
   readonly clear: () => void;
   readonly clearErrors: () => void;
   readonly handleSubmit: (
-    handler?: SubmitHandlerCallbackOf<TFields>,
+    handler?: SubmitHandlerCallbackOf<TFields, TRules>,
   ) => (e: React.FormEvent) => void;
-  readonly useRules: (rules: FormRulesOf<TFields>) => void;
+  readonly useRules: <TRules extends FormRuleFactoriesOf<TFields, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
+    rules: TRules,
+  ) => Omit<Form<TFields, TRules>, 'useRules'>;
 };
 
 type Options<
-  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+  TFields extends Record<string, FieldFactory<any, any, any>>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  TRules extends FormRuleFactoriesOf<TFields, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 > = {
   readonly fields: TFields;
+  readonly rules?: TRules;
 };
 
-export const useForm = <
-  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+const useFormCore = <
+  TFields extends Record<string, FieldFactory<any, any, any>>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  TRules extends FormRuleFactoriesOf<TFields, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 >({
   fields: fieldFactories,
-}: Options<TFields>): Form<TFields> => {
+  rules: ruleFactories,
+}: Options<TFields, TRules>): Form<TFields, TRules> => {
   const memoizedFields = useMemo(
     () => mapValues(fieldFactories, (createField, name) => createField(name)),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
-  const rulesRef = useRef<FormRulesOf<TFields>>();
-
   const [errors, setErrors] = useState<FormErrorsOf<TFields>>(
     mapValues(memoizedFields, () => []),
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const rulesRef = useLatestRef(ruleFactories);
   const isSubmittingRef = useLatestRef(isSubmitting);
   const submitHandlerRef = useRef<(e: React.FormEvent) => void>();
-  const submitHandlerCallbackRef = useRef<SubmitHandlerCallbackOf<TFields>>();
+  const submitHandlerCallbackRef = useRef<
+    SubmitHandlerCallbackOf<TFields, TRules>
+  >();
 
   const getValues = useCallback(
     (): FormValuesOf<TFields> =>
@@ -119,26 +148,53 @@ export const useForm = <
     [memoizedFields],
   );
 
-  const dangerouslyGetRefinedValues = useCallback(
-    (): RefinedFormValuesOf<TFields> =>
-      mapValues(memoizedFields, (field) => field.dangerouslyGetRefinedValue()),
-    [memoizedFields],
-  );
-
   const getErrors = useCallback((): FormErrorsOf<TFields> => {
-    const formValues = getValues();
-
-    return mapValues(memoizedFields, (field, fieldName) => {
-      const specError = field.validate().getError() || ValidationError.empty;
-
-      const rule = rulesRef.current && rulesRef.current[fieldName];
-      const ruleError =
-        (rule && rule(formValues[fieldName], formValues)) ||
-        ValidationError.empty;
-
-      return specError.concat(ruleError).messages;
+    const fieldErrors = mapValues(memoizedFields, (field) => {
+      const fieldError = field.validate().getError();
+      return fieldError != null ? fieldError.messages : [];
     });
-  }, [getValues, memoizedFields]);
+
+    if (someValue(fieldErrors, (value) => value.length > 0)) {
+      return fieldErrors;
+    }
+
+    const rules = rulesRef.current;
+    if (rules == null) {
+      return fieldErrors;
+    }
+
+    const refinedFieldValues = getValues();
+
+    return mapValues(fieldErrors, (fieldErrorMessages, fieldName) => {
+      const rule = rules[fieldName];
+      if (rule == null) {
+        return fieldErrorMessages;
+      }
+
+      const validate: Validator<any, any> = rule(refinedFieldValues); // eslint-disable-line @typescript-eslint/no-explicit-any
+      const ruleError = validate(refinedFieldValues[fieldName]).getError();
+      if (ruleError == null) {
+        return fieldErrorMessages;
+      }
+
+      return fieldErrorMessages.concat(ruleError.messages);
+    });
+  }, [getValues, memoizedFields, rulesRef]);
+
+  const dangerouslyGetRefinedFormValues = useCallback((): RefinedFormValuesOf<
+    TFields,
+    TRules
+  > => {
+    const formErrors = getErrors();
+
+    if (someValue(formErrors, (value) => value.length > 0)) {
+      throw new Error(
+        'dangerouslyGetRefinedFormValues() called, but validation falied.',
+      );
+    }
+
+    return (getValues() as unknown) as RefinedFormValuesOf<TFields, TRules>;
+  }, [getErrors, getValues]);
 
   const resetValues = useCallback((): void => {
     mapValues(memoizedFields, (field) => field.reset());
@@ -199,7 +255,7 @@ export const useForm = <
     clear,
     clearErrors,
     handleSubmit: useCallback(
-      (handlerCallback?: SubmitHandlerCallbackOf<TFields>) => {
+      (handlerCallback?: SubmitHandlerCallbackOf<TFields, TRules>) => {
         submitHandlerCallbackRef.current = handlerCallback;
 
         if (submitHandlerRef.current != null) {
@@ -227,7 +283,7 @@ export const useForm = <
             return;
           }
 
-          const submittion = handler(dangerouslyGetRefinedValues());
+          const submittion = handler(dangerouslyGetRefinedFormValues());
           if (!(submittion instanceof Promise)) {
             setIsSubmitting(false);
             return;
@@ -244,10 +300,32 @@ export const useForm = <
           );
         });
       },
-      [dangerouslyGetRefinedValues, isSubmittingRef, memoizedFields, validate],
+      [
+        dangerouslyGetRefinedFormValues,
+        isSubmittingRef,
+        memoizedFields,
+        validate,
+      ],
     ),
-    useRules: useCallback((rules: FormRulesOf<TFields>) => {
-      rulesRef.current = rules;
-    }, []),
+    useRules: <TRules extends FormRuleFactoriesOf<TFields, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
+      rules: TRules,
+    ): Omit<Form<TFields, TRules>, 'useRules'> => {
+      const form = useFormCore({
+        fields: fieldFactories,
+        rules,
+      });
+
+      return mapObject(form, ({ useRules, ...params }) => {
+        useRules;
+
+        return params;
+      });
+    },
   };
 };
+
+export const useForm = <
+  TFields extends Record<string, FieldFactory<any, any, any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+>(
+  fields: TFields,
+): Form<TFields, never> => useFormCore({ fields });

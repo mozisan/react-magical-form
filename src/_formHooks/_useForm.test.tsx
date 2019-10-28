@@ -11,11 +11,13 @@ import {
   text,
   textChoice,
 } from '../_fieldFactories';
-import { combineRefs, expectType } from '../_utils';
-import { compose, validationError } from '../_validator';
+import { combineRefs, expectType, mapObject } from '../_utils';
+import { compose } from '../_validator';
 import {
+  exact,
   max,
   min,
+  noop,
   oneOfNumbers,
   oneOfTexts,
   range,
@@ -31,14 +33,21 @@ describe('useForm()', () => {
 
     const Component: React.FC = () => {
       const params = useForm({
-        fields: {
-          foo: text(),
-        },
+        foo: text(),
       });
 
-      useEffect(() => {
-        detectReRender();
-      }, Object.values(params)); // eslint-disable-line react-hooks/exhaustive-deps
+      useEffect(
+        () => {
+          detectReRender();
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        Object.values(
+          mapObject(params, ({ useRules, ...values }) => {
+            useRules;
+            return values;
+          }),
+        ),
+      );
 
       return null;
     };
@@ -60,9 +69,7 @@ describe('useForm()', () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: checkbox(),
-              },
+              foo: checkbox(),
             });
 
             useEffect(() => {
@@ -102,9 +109,7 @@ describe('useForm()', () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: file(),
-              },
+              foo: file(),
             });
 
             useEffect(() => {
@@ -144,9 +149,7 @@ describe('useForm()', () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: files(),
-              },
+              foo: files(),
             });
 
             useEffect(() => {
@@ -186,9 +189,7 @@ describe('useForm()', () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: number(),
-              },
+              foo: number(),
             });
 
             useEffect(() => {
@@ -225,9 +226,7 @@ describe('useForm()', () => {
             const fooOfBazInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: numberChoice(),
-              },
+              foo: numberChoice(),
             });
 
             useEffect(() => {
@@ -279,9 +278,7 @@ describe('useForm()', () => {
             const fooInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: text(),
-              },
+              foo: text(),
             });
 
             useEffect(() => {
@@ -318,9 +315,7 @@ describe('useForm()', () => {
             const fooOfBazInputRef = useRef<HTMLInputElement>(null);
 
             const { field, getValues } = useForm({
-              fields: {
-                foo: textChoice(),
-              },
+              foo: textChoice(),
             });
 
             useEffect(() => {
@@ -373,11 +368,9 @@ describe('useForm()', () => {
       it('should return correct values', () => {
         const { result } = renderHook(() =>
           useForm({
-            fields: {
-              foo: checkbox(),
-              bar: number(),
-              baz: text(),
-            },
+            foo: checkbox(),
+            bar: number(),
+            baz: text(),
           }),
         );
 
@@ -393,11 +386,9 @@ describe('useForm()', () => {
       it('should return correct values', () => {
         const { result } = renderHook(() =>
           useForm({
-            fields: {
-              foo: checkbox({ initial: true }),
-              bar: number({ initial: 0 }),
-              baz: text({ initial: 'baz' }),
-            },
+            foo: checkbox({ initial: true }),
+            bar: number({ initial: 0 }),
+            baz: text({ initial: 'baz' }),
           }),
         );
 
@@ -414,18 +405,16 @@ describe('useForm()', () => {
     it('should return correct values', () => {
       const { result } = renderHook(() =>
         useForm({
-          fields: {
-            foo: checkbox(),
-            bar: number({ spec: range(1, 10) }),
-            baz: text({ spec: required() }),
-            foobar: number({
-              initial: 1,
-              spec: compose(
-                min(2),
-                max(0),
-              ),
-            }),
-          },
+          foo: checkbox(),
+          bar: number({ spec: range(1, 10) }),
+          baz: text({ spec: required() }),
+          foobar: number({
+            initial: 1,
+            spec: compose(
+              min(2),
+              max(0),
+            ),
+          }),
         }),
       );
 
@@ -444,9 +433,7 @@ describe('useForm()', () => {
     it('should call e.preventDefault()', () => {
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
-          fields: {
-            foo: text(),
-          },
+          foo: text(),
         });
 
         return <form data-testid="form" onSubmit={handleSubmit()} />;
@@ -469,9 +456,7 @@ describe('useForm()', () => {
 
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
-          fields: {
-            foo: text(),
-          },
+          foo: text(),
         });
 
         return (
@@ -495,11 +480,9 @@ describe('useForm()', () => {
 
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
-          fields: {
-            foo: text({
-              spec: required(),
-            }),
-          },
+          foo: text({
+            spec: required(),
+          }),
         });
 
         return (
@@ -519,12 +502,10 @@ describe('useForm()', () => {
     it('should focus element which has error', () => {
       const Component: React.FC = () => {
         const { field, handleSubmit } = useForm({
-          fields: {
-            foo: text(),
-            bar: text({
-              spec: required(),
-            }),
-          },
+          foo: text(),
+          bar: text({
+            spec: required(),
+          }),
         });
 
         return (
@@ -549,9 +530,7 @@ describe('useForm()', () => {
 
       const Component: React.FC = () => {
         const { handleSubmit } = useForm({
-          fields: {
-            foo: text(),
-          },
+          foo: text(),
         });
 
         return (
@@ -577,12 +556,10 @@ describe('useForm()', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
-              fields: {
-                foo: checkbox(),
-                bar: checkbox({
-                  spec: required(),
-                }),
-              },
+              foo: checkbox(),
+              bar: checkbox({
+                spec: required(),
+              }),
             }),
           );
 
@@ -609,12 +586,10 @@ describe('useForm()', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
-              fields: {
-                foo: file(),
-                bar: file({
-                  spec: required(),
-                }),
-              },
+              foo: file(),
+              bar: file({
+                spec: required(),
+              }),
             }),
           );
 
@@ -641,12 +616,10 @@ describe('useForm()', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
-              fields: {
-                foo: files(),
-                bar: files({
-                  spec: required(),
-                }),
-              },
+              foo: files(),
+              bar: files({
+                spec: required(),
+              }),
             }),
           );
 
@@ -673,12 +646,10 @@ describe('useForm()', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
-              fields: {
-                foo: number(),
-                bar: number({
-                  spec: required(),
-                }),
-              },
+              foo: number(),
+              bar: number({
+                spec: required(),
+              }),
             }),
           );
 
@@ -705,17 +676,15 @@ describe('useForm()', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
-              fields: {
-                foo: numberChoice({
-                  spec: required(),
-                }),
-                bar: numberChoice({
-                  spec: compose(
-                    required(),
-                    oneOfNumbers(1, 2),
-                  ),
-                }),
-              },
+              foo: numberChoice({
+                spec: required(),
+              }),
+              bar: numberChoice({
+                spec: compose(
+                  required(),
+                  oneOfNumbers(1, 2),
+                ),
+              }),
             }),
           );
 
@@ -742,17 +711,15 @@ describe('useForm()', () => {
         it('should refinement types correctly', () => {
           const { result } = renderHook(() =>
             useForm({
-              fields: {
-                foo: textChoice({
-                  spec: required(),
-                }),
-                bar: textChoice({
-                  spec: compose(
-                    required(),
-                    oneOfTexts('a', 'b'),
-                  ),
-                }),
-              },
+              foo: textChoice({
+                spec: required(),
+              }),
+              bar: textChoice({
+                spec: compose(
+                  required(),
+                  oneOfTexts('a', 'b'),
+                ),
+              }),
             }),
           );
 
@@ -777,44 +744,95 @@ describe('useForm()', () => {
     });
   });
 
-  describe('options.rules', () => {
-    it('should validate field value comparing form values', () => {
-      const { result } = renderHook(() =>
-        useForm({
-          fields: {
-            foo: number({
-              initial: 2,
-            }),
-            bar: number({
-              initial: 0,
-              spec: min(1),
-            }),
-          },
-        }),
-      );
+  describe('useRules', () => {
+    it('should avoid redundant re-render', () => {
+      const detectReRender = jest.fn();
 
-      act(() => {
-        result.current.useRules({
-          bar: (value, { foo }) => {
-            if (value == null || foo == null) {
+      const Component: React.FC = () => {
+        const { useRules } = useForm({
+          foo: text(),
+        });
+
+        const params = useRules({
+          foo: () => required(),
+        });
+
+        useEffect(
+          () => {
+            detectReRender();
+          },
+          Object.values(params), // eslint-disable-line react-hooks/exhaustive-deps
+        );
+
+        return null;
+      };
+
+      const rendered = render(<Component />);
+
+      expect(detectReRender).toBeCalledTimes(1);
+
+      rendered.rerender(<Component />);
+
+      expect(detectReRender).toBeCalledTimes(1);
+    });
+
+    it('should validate field value comparing form values', () => {
+      const { result } = renderHook(() => {
+        const { useRules } = useForm({
+          foo: number({ initial: 2 }),
+          bar: number({ initial: 3 }),
+        });
+
+        return useRules({
+          bar: ({ foo }) => {
+            if (foo == null) {
               return;
             }
 
-            if (value < foo) {
-              return validationError(
-                'should be smaller than the value of `foo`.',
-              );
-            }
+            return max(foo);
           },
         });
+      });
 
+      act(() => {
         expect(result.current.validate()).toEqual({
           foo: [],
-          bar: [
-            expect.any(String),
-            'should be smaller than the value of `foo`.',
-          ],
+          bar: [expect.any(String)],
         });
+      });
+    });
+
+    it('should refine types', () => {
+      const { result } = renderHook(() => {
+        const { useRules } = useForm({
+          foo: number({ spec: oneOfNumbers(1, 2, 3) }),
+          bar: number(),
+        });
+
+        return useRules({
+          bar: ({ foo }) =>
+            compose(
+              required(),
+              foo != null ? exact(foo) : noop(),
+            ),
+        });
+      });
+
+      const values = result.current.getValues();
+      expectType<typeof values>()
+        .as<{
+          readonly foo: number | undefined;
+          readonly bar: number | undefined;
+        }>()
+        .assert();
+
+      result.current.handleSubmit((refinedValues) => {
+        expectType<typeof refinedValues>()
+          .as<{
+            readonly foo: 1 | 2 | 3 | undefined;
+            readonly bar: 1 | 2 | 3;
+          }>()
+          .assert();
       });
     });
   });
